@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" href='../../static/layui/css/layui.css'
+          th:href="@{/layui/css/layui.css}">
+    <link rel="stylesheet" href='../../static/css/detail.css'
+          th:href="@{/css/detail.css}">
+    <meta charset="UTF-8">
+    <title>房屋详情页</title>
+</head>
+<body>
+<div class="layui-fluid">
+    <div th:replace="top/top::top"></div>
+    <div class="layui-main" id="detail">
+    </div>
+    <div class="layui-row">
+        <div th:insert="bottom/bottom::footer"></div>
+    </div>
+</div>
+<script src="../../static/layui/layui.js" th:src="@{/layui/layui.js}"></script>
+<script id="demo" type="text/html">
+    <div class="layui-row">
+        <div class="layui-col-md6 layui-col-xs6">
+            <div class="polaroid">
+                <img src={{= d.images }}>
+            </div>
+        </div>
+        <div class="layui-col-md6 layui-col-xs6">
+            <div class="property">
+                <input type="hidden" name="houseid" lay-verify="required" autocomplete="off" class="layui-input"
+                       style="height: 0px" value={{= d.houseid }}>
+                <h1 class="title">{{d.housename}}</h1>
+                <ul class="price-info">
+                    <li class="price-block">
+                        <span class="para">&nbsp;租&nbsp;&nbsp;价：</span>
+                        <span class="price big"><b>¥</b><em>{{d.zent}}</em></span>
+                        <span class="bargain-tip">
+                        <i class="layui-icon layui-icon-face-surprised"></i>该商品拒绝讲价！
+                    </span>
+                    </li>
+                </ul>
+                <ul class="idle-info">
+                    <li>
+                        <span class="para">所在区域:</span>
+                        <em>{{d.housearea }}</em>
+                    </li>
+                    <li>
+                        <span class="para">&nbsp;所在地:</span>
+                        <p>{{ d.address}}</p>
+                    </li>
+                    <li>
+                        <span class="para">出租状态:</span>
+                        <em>
+                            {{# if(d.status){ }}
+                            已出租
+                            {{# }else{ }}
+                            未出租
+                            {{# } }}
+                        </em>
+                    </li>
+                    <li>
+                        <span class="para">支付方式:</span>
+                        <em>{{ d.payway }}</em>
+                    </li>
+                    <li>
+                        <span class="para">认证状态:</span>
+                        <em>
+                            {{# if( d.attestation ){ }}
+                            <i class="layui-icon layui-icon-auz"
+                               style="font-size: 30px; color: #1E9FFF; margin-left: 20px"></i>
+                            {{# }else{ }}
+                            <i class="layui-icon layui-icon-close-fill"
+                               style="font-size: 30px; color: #ff1a00;margin-left: 20px"></i>
+                            {{# } }}
+                        </em>
+                    </li>
+                </ul>
+                <div class="buy-now">
+                    <a class="layui-btn btn" id="reservation_house">预定房屋</a>
+                    <a class="layui-btn btn" id="order_add">入住 </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-row">
+        <div class="layui-col-md12">
+            <div class="J_Panel desc-mod desc-intro">
+                <h2><b>宝贝介绍</b></h2>
+                <div class="intro-para clearfix">
+                    <ul>
+                        <li>
+                            <span class="title">发布时间：</span>
+                            <span>{{ d.date }}</span>
+                        </li>
+                        <li>
+                            <span class="title">房屋面积：</span>
+                            <span>{{ d.area }} </span>㎡
+                        </li>
+                    </ul>
+                    <ul>
+                        <li>
+                            <span class="title">房屋编号：</span>
+                            <span>{{ d.houseid }}</span>
+                        </li>
+
+                        <li>
+                            <input type="hidden" id="user_id" value={{= d.userid }} style="height: 0px; width: 0px">
+                            <span class="title">出租人：</span>
+                            <span>{{ d.username }}</span>
+                        </li>
+                    </ul>
+                    <ul>
+                        <li>
+                            <span class="title">房源风格</span>
+                            <span>{{ d.style }}</span>
+                        </li>
+                        <li>
+                            <span class="title">房屋类型</span>
+                            <span>{{ d.payway }}</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="describe">
+                    <div>房屋设施:</div>
+                    {{ d.faci }}
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+<script type="text/javascript" src="../../static/js/house_detail.js" th:src="@{/js/house_detail.js}"></script>
+</body>
+<div class="layui-form" id="order_time" style="display: none">
+    <div class="layui-form-item">
+        <label class="layui-form-label"style="width: 100px">选择合同时间</label>
+        <div class="layui-input-inline">
+            <select name="ordertime" lay-verify="required">
+                <option value=""></option>
+                <option value="1">一年</option>
+                <option value="2">二年</option>
+                <option value="3">三年</option>
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label" style="width: 100px">备注</label>
+        <div class="layui-input-inline">
+            <textarea name="desc" placeholder="请输入备注" class="layui-textarea">无</textarea>
+        </div>
+    </div>
+</div>
+</html>

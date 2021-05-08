@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html class="x-admin-sm" xmlns:th="http://www.thymeleaf.org">
+  
+  <head>
+    <meta charset="UTF-8">
+    <title>欢迎页面-X-admin2.1</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+  	<link rel="stylesheet" href="/admin/css/font.css" th:href="@{/admin/css/font.css}">
+	<link rel="stylesheet" href="/admin/css/xadmin.css" th:href="@{/admin/css/xadmin.css}">
+   	<script type="text/javascript" src="/Jquery/3.2.1/jquery.min.js" th:src="@{/Jquery/3.2.1/jquery.min.js}"></script>
+    <script src="/layui/layui.js" charset="utf-8" th:src="@{/layui/layui.js}" ></script>
+    <script type="text/javascript" src="/admin/js/xadmin.js" th:src="@{/admin/js/xadmin.js}"></script>
+    <script type="text/javascript" src="/admin/js/cookie.js" th:src="@{/admin/js/cookie.js}"></script>
+    <script type="text/javascript" src="/admin/js/xconfig.js" th:src="@{/admin/js/cookie.js}"></script>
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+      <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+      <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  
+  <body>
+    <div class="x-nav">
+      <span class="layui-breadcrumb">
+        <a href="">首页</a>
+        <a href="">演示</a>
+        <a>
+          <cite>导航元素</cite></a>
+      </span>
+      <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+        <i class="layui-icon" style="line-height:30px">ဂ</i></a>
+    </div>
+    <div class="x-body">
+      <div class="layui-row">
+        <form class="layui-form layui-col-md12 x-so">
+          <input class="layui-input" placeholder="开始日" name="start" id="start">
+          <input class="layui-input" placeholder="截止日" name="end" id="end">
+          <input type="text" name="username"  placeholder="请输入合同号" autocomplete="off" class="layui-input">
+          <button class="layui-btn"  lay-submit="" lay-filter="sreach"><i class="layui-icon">&#xe615;</i></button>
+        </form>
+      </div>
+      <script type="text/html" id="toolbar">
+        <button class="layui-btn layui-btn-danger" onclick="delAll()"><i class="layui-icon"></i>批量删除</button>
+        <button class="layui-btn" onclick="x_admin_show('添加合同','./order-add.html',452,560)"><i class="layui-icon"></i>添加</button>
+      </script>
+      <script type="text/html" id="checkboxTp2">
+        <input type="checkbox" name="status" value="{{d.id}}" status="{{d.status}}" title="认证状态" lay-filter="status" {{
+               d.status>= 1 ? 'checked' : '' }}>
+      </script>
+      <script type="text/html" id="houser">
+        <input type="hidden" value="{{d.id}}" style="display: none">
+        <a class="layui-btn layui-btn-xs" onclick="show_house(this,event)">查看详情</a>
+      </script>
+      <script type="text/html" id="bar">
+        <a class="layui-btn layui-btn-xs layui-btn-warm" lay-event="upOrder">查看合同</a>
+        <a class="layui-btn layui-btn-xs" lay-event="orderSigned">同意</a>
+		<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">取消合同</a>
+      </script>
+       <script type="text/html" id="checkboxTp3">
+            {{#   if( (d.define & 4) === 4 ){  }}
+            <i class="layui-icon layui-icon-auz" style="font-size: 30px; color: #1E9FFF; margin-left: 20px"></i>
+            {{# }else{ }}
+            <i class="layui-icon layui-icon-close-fill" style="font-size: 30px; color: #ff1a00;margin-left: 20px"></i>
+            {{#  } }}
+        </script>
+      
+      <table id="order" lay-filter="order"></table>
+    </div>
+    <script>
+      layui.use('laydate', function(){
+        var laydate = layui.laydate;
+        
+        //执行一个laydate实例
+        laydate.render({
+          elem: '#start' //指定元素
+        });
+
+        //执行一个laydate实例
+        laydate.render({
+          elem: '#end' //指定元素
+        });
+      });
+
+      layui.use(['table', 'jquery','form','upload','xajax'], function () {
+          let table = layui.table,
+              form = layui.form,
+              $ = layui.jquery,
+              upload = layui.upload,
+              xajax = layui.xajax;
+          let order_list = 'http://localhost:8080/order/list';
+          xajax.error_token('/admin/index');
+          let token = xajax.get_token();
+          let user = xajax.get_User();
+          xajax.formatDate();
+          let retable = table.render({
+              elem: '#order'//表格绑定 根据id绑定
+              , url: order_list //请求地址
+              , method: 'POST'//请求方法
+              , where: {"access_token": token.access_token,'close':0}
+              , request: {
+                  pageName: 'pageNum' //页码的参数名称，默认：page
+                  , limitName: 'pageSize' //每页数据量的参数名，默认：limit
+              },
+              parseData: function (res) { //res 即为原始返回的数据
+                  return {
+                      "code": res.code, //解析接口状态
+                      "msg": res.msg, //解析提示文本
+                      "count": res.data[0].total, //解析数据长度
+                      "data": res.data[0].list //解析数据列表
+                  };
+              }
+              , response: {
+                  statusCode: 200 //规定成功的状态码，默认：0
+              }
+              // , contentType: 'application/json'//发送到服务端的内容编码类型
+              , toolbar: '#toolbar' //开启表格头部工具栏区域 左边图标
+              , title: '订单表格'//定义 table 的大标题（在文件导出等地方会用到
+              , totalRow: false // 开启合计行
+              ,text: {
+                  none: '暂无相关数据' //默认：无数据。注：该属性为 layui 2.2.5 开始新增
+              }
+              , cols: [
+                  [
+                      {type: 'radio', fixed: 'left'}
+                      , {
+                      field: 'id',
+                      title: '合同编号',
+                      width: 100,
+                      fixed: 'left',
+                      unresize: true,//不可编辑
+                      sort: true,//排序
+                      totalRowText: '合计'
+                  }
+                      , {field: 'u_user_id', title: '房东编号', width: 80}
+                      , {field: 'u_nick_name', title: '房东姓名', width: 80}
+                      , {
+                      field: 'u_id_card',
+                      title: '房东身份证',
+                      width: 140,
+                      templet: '#idcard1',
+                      sort: true
+                  }
+                      , {field: 'u_phone', title: '房东电话', width: 120}
+                      , {field: 'house_id', title: '房屋编号', width: 100, sort: true}
+                      , {field: 'title', title: '房屋名称', width: 100}
+                      , {field: 'user_id', title: '租客编号', width: 100}
+                      , {field: 'nick_name', title: '租客名字', width: 100}
+                      , {field: 'phone', title: '租客电话', width: 120, sort: true}
+                      , {
+                      field: 'id_card',
+                      title: '租客身份证',
+                      width: 140,
+                      templet:function (d) {
+                          return plusXing(d.id_card);
+                      },
+                      sort: true,
+                      hide: true
+                  }
+                      , {field: 'rent', title: '应交租金', width: 90, sort: true,align:'center'}
+                      , {field: 'create_time', title: '签订时间', width: 160, sort: true,templet:function (d) {
+                    	  if(d.create_time === null){
+                              return '无数据'
+                          }
+                          return new Date(d.create_time).format('yyyy-MM-dd hh-mm-ss');
+                      }}
+                      , {field: 'end_time', title: '到期时间', width: 160, sort: true ,templet:function (d) {
+                    	  if(d.end_time === null){
+                              return '无数据'
+                          }
+                          return new Date(d.end_time).format('yyyy-MM-dd hh-mm-ss');
+                      }}
+                      , {
+                      title: '房屋详情',
+                      align:'center',
+                      width: 120,
+                      templet: '#houser'
+                  }
+                      , {field: 'remark', title: '备注', width: 100}
+                      , {field: 'status', title: '认证状态', width: 120,align:'center', sort: true, templet: '#checkboxTp2'}
+                      , {field: 'define', title: '签订状态', width: 100, sort: true, templet: '#checkboxTp3'} 
+                      , {fixed: 'right', title: '操作', toolbar: '#bar', width: 250}
+                  ]
+              ]
+              , page: true //分页开关
+              , loading: false
+          });
+
+          //工具栏事件
+          table.on('toolbar(order)', function (obj) {
+              let checkStatus = table.checkStatus(obj.config.id);
+              switch (obj.event) {
+                  case 'flush':
+                      retable.reload();
+                      break;
+              }
+          });
+          //监听行工具事件
+          //右侧
+          table.on('tool(order)', function (obj) {
+              let data = obj.data;
+              // console.log(obj);
+              switch (obj.event) {
+                  case 'orderSigned':
+                	  if(data.status !== 1){
+                	    layer.msg('没有认证，认证去吧', {icon: 2, time: 1000});
+                  		return false;
+                  	}
+                  	let define = data.define;
+                  	if((define & 4) === 4){
+                  		layer.msg('你已经确认了', {icon: 1, time: 1000});
+                  		return false;
+                  	}
+                  	 layer.confirm('真的确认了么，不可修改的哦', function (index) {
+                           xajax.xajax({
+                           	url:'http://localhost:8080/order/update',
+                           	data:{'id': data.id,'define':define^4},
+                           	success:function(res){
+                           		layer.msg('修改成功', {icon: 1, time: 1000});
+                           	},
+                           	error:function(){
+                           		layer.msg('修改失败', {icon: 2, time: 1000});
+                           	}
+                           });
+                           layer.close(index);
+                       });
+                      break;
+                  case 'upOrder':
+                      layer.open({
+                          type: 1,
+                          shade: 0.8,
+                          offset: 'auto',
+                          area: [250 + 'px', 200 + 'px'],
+                          scrollbar: false,//不现实滚动条
+                          title: "文件上传", //不显示标题
+                          content: '内容' //捕获的元素，注意：最好该指定的元素要存放在body最外层，否则可能被其它的相对元素所影响
+                      });
+                      break;
+                  case 'del':
+                      layer.confirm('真的删除行么', function (index) {
+                          obj.del();
+                          xajax.xajax({
+                              url: 'http://localhost:8080/order/update',
+                              data: {'id': data.id, 'close': 1,},
+                              success: function () {
+                                  layer.msg('删除成功', {icon: 1, time: 1000});
+                                  obj.update({
+                           			'define': (define^4)
+                           		});
+                              }
+                              , error: function () {
+                                  layer.msg('删除失败', {icon: 2, time: 1000});
+                              }
+                          });
+                          layer.close(index);
+                      });
+                      break;
+              }
+          });
+
+          form.on('checkbox(status)', function (obj) {
+              let status = $(this).attr('status');
+              let Intstatus = parseInt(status);
+              if (obj.elem.checked === true && Intstatus === 0) {
+                  Intstatus = 1;
+              } else {
+                  Intstatus = 0;
+              }
+              xajax.xajax({
+                  url: 'http://localhost:8080/order/update',
+                  data: {'id': this.value, 'status': Intstatus},
+                  success: function (res) {
+                      layer.tips('修改成功', obj.othis);
+                  },
+                  error: function () {
+                      layer.tips('修改失败', obj.othis);
+                  }
+              });
+          });
+
+      });
+
+      //上传
+      function uploadData(data) {
+          layui.use('upload', function () {
+              let upload = layui.upload;
+              let $ = layui.jquery;
+              let id = data.houseid;
+              upload.render({
+                  elem: '#file', //绑定元素
+                  url: '/file/' //上传接口
+                  , method: 'post'//默认post
+                  , accept: 'file'//文件类型
+                  , size: 51200//大小
+                  , exts: 'zip|rar|7z|doc|txt|docx|rtf|pdf|gz|arj'//允许后缀
+                  , auto: true//自动上传
+                  // , bindAction: '#up'//提交按钮 不使用默认提交方式
+                  , done: function (res) {
+                      console.log('上传完毕回调');
+                      //上传完毕回调
+                  }
+                  , error: function () {
+                      console.log('请求异常回调');
+                      //请求异常回调
+                  }
+
+              });
+          });
+      }
+
+      function show_house(obj, event) {
+          layui.use('jquery', function () {
+              let $ = layui.jquery;
+              let id = $(obj).siblings("input[type='hidden']").val().trim();
+              localStorage.setItem('houseid', id);
+              window.location.href = '/index/show_detail';
+          });
+      }
+      var plusXing = function (str="") {
+          if (str === "" || str === undefined){
+              return '无数据';
+          }else {
+              return str.substring(0, 6) + "**********" + str.substring(str.length - 2);
+          }
+      };
+
+    </script>
+  </body>
+
+</html>

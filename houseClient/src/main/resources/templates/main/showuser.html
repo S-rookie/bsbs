@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" href='../../static/layui/css/layui.css'
+          th:href="@{/layui/css/layui.css}">
+    <meta charset="UTF-8">
+    <title>个人信息页面</title>
+</head>
+<body>
+<div class="layui-fluid">
+    <div th:replace="top/top::top"></div>
+    <div class="layui-row">
+        <div class="layui-main" style="width: 400px;">
+            <div class="layui-form" lay-filter="updataform">
+                <input type="hidden" name="userid" lay-verify="required" autocomplete="off" class="layui-input"
+                       style="height: 0px">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">用户姓名:</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="username" required lay-verify="required"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">性别</label>
+                    <div class="layui-input-block">
+                        <input type="radio" name="usersex" value="0" title="男">
+                        <input type="radio" name="usersex" value="1" title="女">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">电话：</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="userphone" required lay-verify="phone"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">邮箱地址：</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="usermail" required lay-verify="email"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">身份证：</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="useridentity" required lay-verify="identity"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">认证文件:</label>
+                    <div class="layui-input-inline">
+                        <button type="button" class="layui-btn" id="up">
+                            <i class="layui-icon">&#xe67c;</i>认证文件
+                        </button>
+                    </div>
+                </div>
+                <div class="layui-form-item layui-form-text">
+                    <label class="layui-form-label">认证状态:</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="attestation" required lay-verify="required"
+                               autocomplete="off" class="layui-input" disabled>
+                    </div>
+                </div>
+                <!--按钮-->
+                <div class="layui-footer">
+                    <button class="layui-btn layui-btn-lg layui-btn-radius layui-btn-normal" lay-filter="update"
+                            lay-submit>
+                        个人修改
+                    </button>
+                    <button class="layui-btn layui-btn-lg layui-btn-radius layui-btn-normal layui-bg-black"
+                            id="updatepwd">修改密码
+                    </button>
+                    <button class="layui-btn layui-btn-lg layui-btn-radius layui-btn-normal layui-bg-red">押金管理</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="../../static/layui/layui.js" th:src="@{/layui/layui.js}"></script>
+<script src="../../static/js/showUser.js" th:src="@{/js/showUser.js}"></script>
+</body>
+<div id="openpwd" style="display: none">
+    <div class="layui-form" lay-filter="formpwd">
+        <input type="hidden" name="userid" lay-verify="required" autocomplete="off" class="layui-input"
+               style="height: 0px">
+        <div class="layui-form-item">
+            <label class="layui-form-label">新密码：</label>
+            <div class="layui-input-inline">
+                <input type="password" name="oldpassword" required lay-verify="required|password" placeholder="输入的密码"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">再次密码:</label>
+            <div class="layui-input-inline">
+                <input type="password" name="password" required lay-verify="required|repwd" placeholder="再次输入新密码"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <button class="layui-btn layui-btn-lg layui-btn-radius layui-btn-normal" lay-filter="updatepwd"
+                    lay-submit style="margin-left: 98px;">
+                密码修改
+            </button>
+        </div>
+    </div>
+</div>
+</html>
