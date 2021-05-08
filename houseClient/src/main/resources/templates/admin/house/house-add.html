@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html class="x-admin-sm" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>欢迎页面-X-admin2.1</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi"/>
+    <link rel="stylesheet" href="/admin/css/font.css" th:href="@{/admin/css/font.css}">
+    <link rel="stylesheet" href="/admin/css/xadmin.css" th:href="@{/admin/css/xadmin.css}">
+    <script type="text/javascript" src="/Jquery/3.2.1/jquery.min.js" th:src="@{/Jquery/3.2.1/jquery.min.js}"></script>
+    <script src="/layui/layui.js" charset="utf-8" th:src="@{/layui/layui.js}"></script>
+    <script type="text/javascript" src="/admin/js/xadmin.js" th:src="@{/admin/js/xadmin.js}"></script>
+    <script type="text/javascript" src="/admin/js/cookie.js" th:src="@{/admin/js/cookie.js}"></script>
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+<div class="x-body">
+    <form class="layui-form">
+        <div class="layui-form-item">
+            <label for="username" class="layui-form-label">
+                <span class="x-red">*</span>房屋名称
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" id="username" name="title" required=""
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="username" class="layui-form-label">
+                <span class="x-red">*</span>面积
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" id="username" name="area" required=""
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="phone" class="layui-form-label">
+                <span class="x-red">*</span>地区
+            </label>
+            <div class="layui-input-inline">
+                <select name="addr_id" lay-verify="required">
+                    <option value=""></option>
+                    <option value="1">江北</option>
+                    <option value="2">渝北</option>
+                    <option value="3">南岸</option>
+                    <option value="4">巴南</option>
+                    <option value="5">沙坪坝</option>
+                    <option value="6">九龙坡</option>
+                    <option value="7">渝中</option>
+                    <option value="8">大渡口</option>
+                    <option value="9">江津</option>
+                    <option value="10">垫江县</option>
+                    <option value="11">巫溪县</option>
+                    <option value="12">彭水苗族土家族自治县</option>
+                    <option value="13">酉阳土家族苗族自治县</option>
+                    <option value="14">忠县</option>
+                    <option value="15">开州区</option>
+                    <option value="16">奉节县</option>
+                    <option value="17">荣昌区</option>
+                    <option value="18">巫山县</option>
+                    <option value="19">秀山土家族苗族自治县</option>
+                    <option value="20">城口县</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="username" class="layui-form-label">
+                <span class="x-red">*</span>房屋类型
+            </label>
+            <div class="layui-input-inline">
+                <select name="type_a">
+                    <option value="">请选择房间</option>
+                    <option value="1">一室</option>
+                    <option value="2">二室</option>
+                    <option value="3">三室</option>
+                    <option value="4">四室</option>
+                    <option value="5">五室</option>
+                </select>
+            </div>
+            <div class="layui-input-inline">
+                <select name="type_b">
+                    <option value="">请选择厅</option>
+                    <option value="1">一厅</option>
+                    <option value="2">一厅</option>
+                    <option value="3">三厅</option>
+                </select>
+            </div>
+            <div class="layui-input-inline">
+                <select name="type_c">
+                    <option value="">请选择卫生间</option>
+                    <option value="1">一卫</option>
+                    <option value="2">二卫</option>
+                </select>
+            </div>
+            <div class="layui-input-inline">
+                <select name="type_d">
+                    <option value="">请选择厨房</option>
+                    <option value="0">零厨房</option>
+                    <option value="1">一厨</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="username" class="layui-form-label">
+                <span class="x-red">*</span>房源风格
+            </label>
+            <div class="layui-input-inline">
+                <select name="style" lay-verify="required">
+                    <option value="">请选择方式</option>
+                    <option value="0">经济</option>
+                    <option value="1">精装</option>
+                    <option value="2">豪华</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="username" class="layui-form-label">
+                <span class="x-red">*</span>租金
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" name="rent" lay-verify="required" autocomplete="off"
+                       class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="L_email" class="layui-form-label">
+                <span class="x-red">*</span>付款方式
+            </label>
+            <div class="layui-input-inline">
+                <select name="pay_b">
+                    <option value="">请选择方式</option>
+                    <option value="1">押一</option>
+                </select>
+            </div>
+            <div class="layui-input-inline">
+                <select name="pay_a">
+                    <option value="">请选择方式</option>
+                    <option value="1">付一</option>
+                    <option value="3">付三</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label for="desc" class="layui-form-label">
+                房屋设施:
+            </label>
+            <div class="layui-input-block">
+                <textarea placeholder="请输入内容" id="desc" name="info" class="layui-textarea"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">
+                房屋地址:
+            </label>
+            <div class="layui-input-block">
+                <textarea placeholder="请输入内容" name="addr_detail" class="layui-textarea"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="L_repass" class="layui-form-label">
+            </label>
+            <button class="layui-btn" lay-filter="add" lay-submit="">
+                增加
+            </button>
+        </div>
+    </form>
+</div>
+<script>
+    layui.use(['form', 'layer'], function () {
+        let $ = layui.jquery;
+        let form = layui.form
+            , layer = layui.layer;
+        //监听提交
+        form.on('submit(add)', function (data) {
+            $.ajax({
+                url: 'http://localhost/house/add',
+                type: 'POST',
+                data: data.field,
+                success: function (res) {
+                    layer.msg("增加成功", {icon: 1}, function () {
+                        // 获得frame索引
+                        var index = parent.layer.getFrameIndex(window.name);
+                        //关闭当前frame
+                        parent.layer.close(index);
+                    });
+                }
+                , error: function () {
+                    layer.msg("添加失败", {icon: 2});
+                }
+            });
+            return false;
+        });
+
+
+    });
+</script>
+</body>
+
+</html>

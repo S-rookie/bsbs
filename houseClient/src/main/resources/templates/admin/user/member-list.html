@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html class="x-admin-sm" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi"/>
+    <link rel="stylesheet" href="/admin/css/font.css" th:href="@{/admin/css/font.css}">
+    <link rel="stylesheet" href="/admin/css/xadmin.css" th:href="@{/admin/css/xadmin.css}">
+    <script type="text/javascript" src="/Jquery/3.2.1/jquery.min.js" th:src="@{/Jquery/3.2.1/jquery.min.js}"></script>
+    <script src="/layui/layui.js" charset="utf-8" th:src="@{/layui/layui.js}"></script>
+    <script type="text/javascript" src="/admin/js/xadmin.js" th:src="@{/admin/js/xadmin.js}"></script>
+    <script type="text/javascript" src="/admin/js/cookie.js" th:src="@{/admin/js/cookie.js}"></script>
+    <script type="text/javascript" src="/admin/js/xconfig.js" th:src="@{/admin/js/cookie.js}"></script>
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body class="">
+<div class="x-nav">
+      <span class="layui-breadcrumb">
+        <a href="">首页</a>
+        <a href="">演示</a>
+        <a>
+          <cite>导航元素</cite></a>
+      </span>
+    <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right"
+       href="javascript:location.replace(location.href);" title="刷新">
+        <i class="layui-icon" style="line-height:30px">ဂ</i></a>
+</div>
+<div class="x-body">
+    <div class="layui-row">
+        <form class="layui-form layui-col-md12 x-so">
+            <input class="layui-input" autocomplete="off" placeholder="开始日" name="start" id="start">
+            <input class="layui-input" autocomplete="off" placeholder="截止日" name="end" id="end">
+            <input type="text" name="username" placeholder="请输入用户名" autocomplete="off" class="layui-input">
+            <button class="layui-btn" lay-submit="" lay-filter="sreach"><i class="layui-icon">&#xe615;</i></button>
+        </form>
+    </div>
+
+    <table id="user" lay-filter="userlist" class="layui-hide"></table>
+
+</div>
+<script type="text/html" id="toolbarDemo">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-danger" lay-event="getCheckData"><i class="layui-icon"></i>批量删除</button>
+    </div>
+</script>
+
+<script type="text/html" id="status">
+    <input type="checkbox" name="status" value="{{d.id}}"  status="{{d.status}}"  lay-skin="switch" lay-text="是|否" lay-filter="status" {{
+           d.status== 1 ? 'checked' : '' }}>
+</script>
+
+<script type="text/html" id="enabled">
+    <input type="checkbox" name="credit" value="{{d.id}}"  status="{{d.credit}}"  lay-skin="switch" lay-text="是|否" lay-filter="enabled" {{
+           d.credit== 1 ? 'checked' : '' }}>
+</script>
+
+<script type="text/html" id="rightbar">
+    <a class="layui-btn layui-btn-xs" lay-event="edit">修改</a>
+    <a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="editpwd">修改密码</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+
+
+<script>
+    layui.use('laydate', function () {
+        let laydate = layui.laydate;
+
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#start' //指定元素
+        });
+
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#end' //指定元素
+        });
+    });
+</script>
+
+<script>
+    layui.use(['table', 'xajax', 'layer', 'form', 'ifrmsg'], function () {
+        let table = layui.table,
+            xajax = layui.xajax,
+            layer = layui.layer,
+            form = layui.form,
+            ifrmsg = layui.ifrmsg;
+        xajax.error_token('/admin/login');
+        let token = xajax.get_token();
+
+        let retable = table.render({
+            elem: '#user'
+            , url: 'http://localhost:8080/user/list' //数据接口
+            , method: 'POST'//请求方法
+            , where: {'access_token': token.access_token,'close':0}//接口的其它参数
+            , parseData:
+                function (res) { //res 即为原始返回的数据
+                    // console.log(res);
+                    return {
+                        "code": res.code, //解析接口状态
+                        "msg": res.msg, //解析提示文本
+                        "count": res.data[0].total, //解析数据长度
+                        "data": res.data[0].list //解析数据列表
+                    };
+                }
+            , response: {
+                statusCode: 200 //规定成功的状态码，默认：0
+            }
+            , request: {
+                pageName: 'pageNum' //页码的参数名称，默认：page
+                , limitName: 'pageSize' //每页数据量的参数名，默认：limit
+            }
+            , page: true //开启分页
+            , toolbar: '#toolbarDemo'
+            , cols: [
+                [ //表头
+                    {type: 'checkbox', fixed: 'left'}
+                    , {field: 'id', title: 'ID', width: 80, sort: true, fixed: 'left'}
+                    , {field: 'username', title: '登陆名', width: 80, align: 'center'}
+                    , {field: 'nickName', title: '用户名', width: 80, align: 'center'}
+                    , {
+                    field: 'sex', title: '性别', width: 80, sort: true, templet: function (d) {
+                        return (d.sex === 1) ? '女' : '男';
+                    }
+                }
+                    , {field: 'phone', title: '电话', width: 80}
+                    , {field: 'idCard', title: '身份证', width: 177, sort: true}
+                    , {field: 'email', title: '邮件', width: 130}
+                    , {
+                    field: 'createTime', title: '创建时间', width: 120, sort: true, templet: function (d) {
+                        return new Date(d.createTime).format('yyyy-MM-dd hh:mm:ss');
+                    }
+                }
+                    , {field: 'credit', title: '已认证', width: 135, sort: true, align: 'center', templet: '#status'}
+                    , {field: 'status', title: '已激活', width: 135, sort: true, align: 'center', templet: '#enabled'}
+                    , {fixed: 'right', title: '操作', toolbar: '#rightbar', width: 220}
+                ]
+            ]
+        });
+
+        //监听单元格编辑
+        table.on('edit(userlist)', function (obj) {
+            let value = obj.value //得到修改后的值
+                , data = obj.data //得到所在行所有键值
+                , field = obj.field; //得到字段
+            layer.msg('[ID: ' + data.id + '] ' + field + ' 字段更改为：' + value);
+        });
+
+        //头工具栏事件
+        table.on('toolbar(userlist)', function (obj) {
+            let checkStatus = table.checkStatus(obj.config.id);
+            switch (obj.event) {
+                case 'getCheckData':
+                    let data1 = checkStatus.data;
+                    layer.confirm('确认要删除吗？', function (index) {
+//                          xajax.xajax({
+//                              url: 'http://localhost:8080/user/update',
+//                              data: {'close':1,'access_token': token.access_token},
+//                              success: function (res) {
+                        			
+//                              },
+//                              error:function () {
+                        
+//                              }
+//                          });
+                        //捉到所有被选中的，发异步进行删除
+                        layer.msg('删除成功', {icon: 1});
+                        layer.msg('删除失败', {icon: 2});
+                        $(".layui-form-checked").not('.header').parents('tr').remove();
+                    });
+                    break;
+            }
+        });
+        //监听右侧事件
+        table.on('tool(userlist)', function (obj) {
+            let data = obj.data;
+            switch (obj.event) {
+                case 'del':
+                    layer.confirm('真的删除行么', function (index) {
+                        obj.del();
+                        xajax.xajax({
+                         url: 'http://localhost:8080/user/update',
+                         data: {'close':1,'access_token': token.access_token},
+                         success: function (res) {
+                        	 layer.msg('删除成功', {icon: 1});
+                         },
+                         error:function () {
+                        	 layer.msg('删除失败', {icon: 2});
+                         }
+                     });
+                        layer.close(index);
+                    });
+                    break;
+                case 'edit':
+                    layer.close(layer.index);
+                    sessionStorage.setItem('editDate', JSON.stringify(data));
+                    x_admin_show('编辑', 'member-edit.html', 600, 400, false, function () {
+                        let newData = JSON.parse(sessionStorage.getItem('editDate'));
+                        if (newData.t === null) {
+                            return false;
+                        }
+                        obj.update({
+                            'username': newData.username,
+                            'nickName': newData.nickName,
+                            'sex': newData.sex,
+                            'phone': newData.phone,
+                            'idCard': newData.idCard,
+                            'email': newData.email
+                        });
+                    });
+                    break;
+
+                case 'editpwd':
+                    sessionStorage.setItem('id', data.id);
+                    x_admin_show('修改密码', './member-password.html', 600, 400, false);
+                    break;
+            }
+        });
+
+        form.on('switch(status)', function (obj) {
+            let status1 = $(this).attr('status');
+            let Intstatus1 = parseInt(status1);
+            if (obj.elem.checked === true && Intstatus1 === 0) {
+                Intstatus1 = 1;
+            } else {
+                Intstatus1 = 0;
+            }
+            xajax.xajax({
+                url: 'http://localhost:8080/user/update',
+                data: {'id': this.value, 'status': Intstatus1},
+                success: function (res) {
+                    layer.tips('修改成功', obj.othis);
+                },
+                error: function () {
+                    layer.tips('修改失败', obj.othis);
+                }
+            });
+        });
+        form.on('switch(enabled)', function (obj) {
+            let status2 = $(this).attr('status');
+            let Intstatus2 = parseInt(status2);
+            if (obj.elem.checked === true && Intstatus2 === 0) {
+                Intstatus2 = 1;
+            } else {
+                Intstatus2 = 0;
+            }
+            xajax.xajax({
+                url: 'http://localhost:8080/user/update',
+                data: {'id': this.value, 'credit': Intstatus2},
+                success: function (res) {
+                    layer.tips('修改成功', obj.othis);
+                },
+                error: function () {
+                    layer.tips('修改失败', obj.othis);
+                }
+            });
+        });
+
+
+    });
+    Date.prototype.format = function (fmt) {
+        let o = {
+            "M+": this.getMonth() + 1,                 //月份
+            "d+": this.getDate(),                    //日
+            "h+": this.getHours(),                   //小时
+            "m+": this.getMinutes(),                 //分
+            "s+": this.getSeconds(),                 //秒
+            "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+            "S": this.getMilliseconds()             //毫秒
+        };
+        if (/(y+)/.test(fmt)) {
+            fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+        }
+        for (let k in o) {
+            if (new RegExp("(" + k + ")").test(fmt)) {
+                fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+            }
+        }
+        return fmt;
+    }
+
+    function getElementByAttr(tag, attr, value) {
+        var aElements = document.getElementsByTagName(tag);
+        var aEle = [];
+        for (var i = 0; i < aElements.length; i++) {
+            if (aElements[i].getAttribute(attr) == value)
+                aEle.push(aElements[i]);
+        }
+        return aEle;//具有该自定义属性值得元素数组
+    }
+
+
+</script>
+</body>
+</html>
