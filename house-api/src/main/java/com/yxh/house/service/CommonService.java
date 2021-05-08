@@ -1,6 +1,8 @@
 package com.yxh.house.service;
 
+import com.yxh.house.pojo.Certificate;
+
 public interface CommonService {
 
-    public void saveFileToBytes(byte[] bytes);
+    public int saveFileToBytes(Certificate certificate);
 }

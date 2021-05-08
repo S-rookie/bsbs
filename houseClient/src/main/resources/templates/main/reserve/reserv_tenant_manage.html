@@ -22,21 +22,23 @@
         </script>
 
         <script type="text/html" id="checkboxTp2">
-            {{#   if( d.reservestate ){  }}
+            {{#   if( d.reservestate==1 ){  }}
             <i class="layui-icon layui-icon-auz" style="font-size: 30px; color: #1E9FFF; margin-left: 20px"></i>
-            {{# }else{ }}
+            {{# }else if( d.reservestate== '999' ){  }}
+            <i class="layui-icon layui-icon-close-fill" style="font-size: 30px; color: #fab314;margin-left: 20px"></i>
+            {{# }else{ console.log(d.reservestate)}}
             <i class="layui-icon layui-icon-close-fill" style="font-size: 30px; color: #ff1a00;margin-left: 20px"></i>
             {{#  } }}
         </script>
         <script type="text/html" id="showphone1">
-            {{#   if( d.reservestate == true ){  }}
+            {{#   if( d.reservestate == 0 ){  }}
             <div>{{ d.tenantphone }}</div>
             {{# }else{ }}
             <div style="color: #ff1a00;margin-left: 20px">没有权限</div>
             {{#  } }}
         </script>
         <script type="text/html" id="showphone2">
-            {{#   if( d.reservestate ){  }}
+            {{#   if( d.reservestate == 0 ){  }}
             <div>{{ d.owenphone }}</div>
             {{# }else{ }}
             <div style="color: #ff1a00;margin-left: 20px">没有权限</div>

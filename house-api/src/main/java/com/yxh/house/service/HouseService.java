@@ -103,7 +103,7 @@ public class HouseService {
 		return new PageInfo<>(houses);
 	}
 
-	public int delHouse(String id){
-		return houseMapper.deleteHouseById(Integer.parseInt(id));
+	public int delHouse(Integer id){
+		return houseMapper.deleteHouseById(id);
 	}
 }

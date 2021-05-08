@@ -98,7 +98,7 @@
 
     <delete id="deleteHouseById" parameterType="int">
         <if test="house_id!=null">
-            delete * from house where id = #{house_id}
+            delete from house where id = #{house_id}
         </if>
     </delete>
 </mapper>

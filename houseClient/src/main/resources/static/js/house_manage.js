@@ -89,14 +89,16 @@ layui.use(['table', 'jquery'], function () {
     //右侧
     table.on('tool(hourse)', function (obj) {
         let data = obj.data;
+        let token = get_localStorage('TOKEN');
+        let parm = Object.assign({"house_id": data.houseid}, {'access_token': token.access_token});
         switch (obj.event) {
             case 'del':
                 layer.confirm('真的删除行么', function (index) {
                     obj.del();
                     $.ajax({
-                        url: 'http://localhost:8080/house/deleteHouseById',
+                        url: 'http://localhost:8080/house/delHouse',
                         type:'POST',
-                        data: {'id': data.id, 'pay_b': 1},
+                        data: parm,
                         success: function () {
                             layer.msg('删除成功', {icon: 1, time: 1000});
                         }
@@ -202,6 +204,7 @@ layui.use(['table', 'jquery'], function () {
 
     //监听出租状态锁定操作
     form.on('checkbox(lockcity)', function (obj) {
+        let token = get_localStorage('TOKEN');
         let status = $(this).attr('status');
         let Intstatus = parseInt(status);
         if (obj.elem.checked === true && Intstatus === 1) {
@@ -235,14 +238,14 @@ function uploadData(data) {
         let upload = layui.upload;
         let $ = layui.jquery;
         let token = get_localStorage('TOKEN');
-        let user = get_localStorage("USER");
         upload.render({
             elem: '#file', //绑定元素
             url: 'http://localhost:8080/common/upload' //上传接口
             , method: 'post'//默认post
             , data: {
                 "access_token": token.access_token,
-                "user_info": user
+                "house_id": data.houseid,
+                "user_id": data.userid
             }
             , accept: 'file'//文件类型
             , size: 51200//大小
@@ -253,6 +256,8 @@ function uploadData(data) {
             , done: function (res) {
                 console.log('上传完毕回调');
                 //上传完毕回调
+                // 关闭上传窗口
+                layer.msg("文件上传成功")
             }
             , error: function () {
                 console.log('请求异常回调');

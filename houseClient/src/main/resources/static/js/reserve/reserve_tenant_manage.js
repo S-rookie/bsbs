@@ -101,7 +101,8 @@ layui.use(['table', 'jquery'], function () {
                         'houseid': list[i].house_id,
                         'payway': list[i].pay_a,
                         'username': list[i].u_nick_name,
-                        'reservestate': list[i].status == 0 ? false :true,
+                        // 'reservestate': list[i].status == 0 ? false :true,
+                        'reservestate': list[i].status,
                         'tenantphone': list[i].phone,
                         'tenantname': list[i].nick_name,
                         'zent': list[i].rent,
@@ -144,10 +145,12 @@ layui.use(['table', 'jquery'], function () {
         let data = obj.data;
         switch (obj.event) {
             case 'del':
+                debugger
                 layer.confirm('真的取消么', function (index) {
                 	 $.ajax({
                      	url:'http://localhost:8080/reserve/update',
                      	type:'POST',
+                         // 添加close 表示预约数据的状态 0--待审核  1--审核通过   close=1,status=999--取消
                      	data:{'id': data.reserveid,'close':1,'access_token': token.access_token},
                      	success:function(res){
                      		layer.msg('修改成功', {icon: 1, time: 1000});

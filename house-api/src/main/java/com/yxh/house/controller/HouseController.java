@@ -56,10 +56,9 @@ public class HouseController {
         return Response.Success(houseService.updateHousePic(housePic));
     }
 
-    @RequestMapping("deleteHouseById")
-    public Response deleteHouseById(HttpServletRequest request){
-        String id = request.getParameter("id");
-        return Response.Success(houseService.delHouse(id));
-
+    @RequestMapping("delHouse")
+    public Response delHouse(HttpServletRequest request){
+        String id = request.getParameter("house_id");
+        return Response.Success(houseService.delHouse(Integer.valueOf(id)));
     }
 }
