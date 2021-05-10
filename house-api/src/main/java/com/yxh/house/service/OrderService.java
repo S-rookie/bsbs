@@ -2,7 +2,9 @@ package com.yxh.house.service;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.yxh.house.mapper.CertificateMapper;
 import com.yxh.house.mapper.OrderMapper;
+import com.yxh.house.pojo.Certificate;
 import com.yxh.house.pojo.House;
 import com.yxh.house.pojo.Order;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,8 @@ import java.util.Map;
 public class OrderService {
     private OrderMapper orderMapper;
     private HouseService houseService;
+    @Autowired
+    CertificateMapper certificateMapper;
 
     @Autowired
     public OrderService(OrderMapper orderMapper, HouseService houseService) {
@@ -44,5 +48,9 @@ public class OrderService {
         PageHelper.startPage(pageNum,pageSize);
         List<Map<Object, Object>> maps = orderMapper.selectOrder(user_id,owen_id,close,define);
         return new PageInfo<>(maps);
+    }
+
+    public Certificate searchContract(Certificate certificate) {
+        return certificateMapper.selectContractByHouseId(certificate);
     }
 }

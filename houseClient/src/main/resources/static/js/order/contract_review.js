@@ -80,7 +80,7 @@ layui.use(['table', 'jquery'], function () {
             }
                 , {field: 'remark', title: '备注', width: 100}
                 , {field: 'status', title: '认证状态', width: 100, sort: true, templet: '#checkboxTp2'}
-                ,{field: 'define', title: '签订状态', width: 100, sort: true, templet: '#checkboxTp3'}
+                 ,{field: 'define', title: '签订状态', width: 100, sort: true, templet: '#checkboxTp3'} 
                 , {fixed: 'right', title: '操作', toolbar: '#bar', width: 240}
             ]
         ]
@@ -104,16 +104,7 @@ layui.use(['table', 'jquery'], function () {
         // console.log(obj);
         switch (obj.event) {
             case 'orderSigned':
-                if(data.status === false){
-                    layer.msg('没有认证，认证去吧', {icon: 2, time: 1000});
-                    return false;
-                }
-                let define = data.define;
-                if((define & 2) === 2){
-                    layer.msg('你已经确认了', {icon: 2, time: 1000});
-                    return false;
-                }
-                layer.confirm('真的确认了么，不可修改的哦', function (index) {
+            	if(data.status === false){
                     $.ajax({
                         url:'http://localhost:8080/order/update',
                         type:'POST',
@@ -128,21 +119,42 @@ layui.use(['table', 'jquery'], function () {
                             layer.msg('修改失败', {icon: 2, time: 1000});
                         }
                     });
-                    layer.close(index);
-                });
+            	}
+            	let define = data.define;
+            	if((define & 2) === 2){
+            		layer.msg('你已经确认了', {icon: 2, time: 1000});
+            		return false;
+            	}
+            	 layer.confirm('真的确认了么，不可修改的哦', function (index) {
+                     $.ajax({
+                     	url:'http://localhost:8080/order/update',
+                     	type:'POST',
+                     	data:{'id': data.contractid,'define':define^2,"access_token": token.access_token},
+                     	success:function(res){
+                     		layer.msg('修改成功', {icon: 1, time: 1000});
+                     		obj.update({
+                     			'define':(define^2)
+                     		});
+                     	},
+                     	error:function(){
+                     		layer.msg('修改失败', {icon: 2, time: 1000});
+                     	}
+                     });
+                     layer.close(index);
+                 });
                 break;
-            case 'upOrder':
-                layer.open({
-                    type: 1,
-                    shade: 0.8,
-                    offset: 'auto',
-                    area: [250 + 'px', 200 + 'px'],
-                    shadeClose: true,//点击外围关闭弹窗
-                    scrollbar: false,//不现实滚动条
-                    title: "文件上传", //不显示标题
-                    content: $('#file') //捕获的元素，注意：最好该指定的元素要存放在body最外层，否则可能被其它的相对元素所影响
-                });
-                uploadData(data);
+            case 'seeContract':
+                // layer.open({
+                //     type: 1,
+                //     shade: 0.8,
+                //     offset: 'auto',
+                //     area: [250 + 'px', 200 + 'px'],
+                //     shadeClose: true,//点击外围关闭弹窗
+                //     scrollbar: false,//不现实滚动条
+                //     title: "文件上传", //不显示标题
+                //     content: $('#file') //捕获的元素，注意：最好该指定的元素要存放在body最外层，否则可能被其它的相对元素所影响
+                // });
+                show_contract(data);
                 break;
         }
     });
@@ -209,6 +221,40 @@ function uploadData(data) {
                 //请求异常回调
             }
 
+        });
+    });
+}
+
+// 查看
+function show_contract(data){
+    let $ = layui.jquery;
+    const certificate_type = '合同';
+    let token = get_LocalStorage('TOKEN');
+    console.log(data)
+    layui.use('jquery', function () {
+        $.ajax({
+            url:'http://localhost:8080/order/showContract',
+            type:'POST',
+            data:{'house_id': data.houseid,"certificate_type": certificate_type,"access_token": token.access_token},
+            responseType: 'blob',
+            success:function(res){
+                layer.msg('查询成功', {icon: 1, time: 1000});
+                const blob = new Blob([res],{type:"text/plain"})
+                let downloadElement = document.createElement('a');
+                let href = window.URL.createObjectURL(blob);
+                downloadElement.href = href;
+                downloadElement.download = 'fileName';
+                document.body.appendChild(downloadElement);
+                // 点击下载
+                downloadElement.click();
+                // 下载完成移除元素
+                document.body.removeChild(downloadElement);
+                // 释放掉blob对象
+                window.URL.revokeObjectURL(href);
+            },
+            error:function(){
+                layer.msg('修改失败', {icon: 2, time: 1000});
+            }
         });
     });
 }

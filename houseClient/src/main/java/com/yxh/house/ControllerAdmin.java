@@ -15,5 +15,10 @@ public class ControllerAdmin {
 	public String login() {
 		return "/admin/login";
 	}
+
+	@RequestMapping("/showContractReview")
+	public String contractReview(){
+		return "/admin/order/ContractReview";
+	}
 }
 

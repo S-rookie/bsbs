@@ -55,7 +55,7 @@ function nva() {
         // 监听导航点击
         element.on('nav(loginfilter)', function (elem) {
             let id = $(elem).attr("id");
-             debugger;
+            // debugger;
             switch (id) {
                 case "loginout_top": {
                     logout();
@@ -72,6 +72,10 @@ function nva() {
                 }
                 case 'house_manage_top': {
                     errotoken('/showRentManage');
+                    break;
+                }
+                case 'contract_review_top': {
+                    errotoken('/admin/showContractReview');
                     break;
                 }
                 case 'user_manage_top': {
@@ -216,11 +220,11 @@ function updateUsername(res) {
             data: tokenheaders,
             success: function (userdata) {
                 if (userdata.code === 200) {
-                      if(userdata.data[0].credit === 0 || userdata.data[0].close === 1 ){
-                    	  localStorage.removeItem('USER');
-                    	  localStorage.removeItem('TOKEN');
-                          return false;
-                     }
+                    if(userdata.data[0].credit === 0 || userdata.data[0].close === 1 ){
+                        localStorage.removeItem('USER');
+                        localStorage.removeItem('TOKEN');
+                        return false;
+                    }
                     LocalStorage_Day.set("USER", userdata.data[0], 1 / 12);
                     username = userdata.data[0].nickName;
                 }
@@ -238,9 +242,9 @@ function updateUsername(res) {
             };
             setname(userdata);
             window.onload = function(){
-            	function fun(){
-            		window.location.reload();
-            	}
+                function fun(){
+                    window.location.reload();
+                }
                 setTimeout("fun()",4000)
             }
         }
@@ -274,10 +278,10 @@ function down() {
         parent.addClass("layui-nav-child");
         let user = LocalStorage_Day.get('USER');
         if(user === null){
-        	 layer.msg('你没有权限',{icon:2,time:2000},function(){
-          	   localStorage.removeItem('TOKEN');
-                 localStorage.removeItem('USER');
-           });
+            layer.msg('你没有权限',{icon:2,time:2000},function(){
+                localStorage.removeItem('TOKEN');
+                localStorage.removeItem('USER');
+            });
         }
     });
 }
