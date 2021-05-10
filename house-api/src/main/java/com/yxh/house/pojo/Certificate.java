@@ -14,6 +14,8 @@ public class Certificate {
 
     String url;
 
+    String certificate_type;
+
     public Integer getId() {
         return id;
     }
@@ -52,5 +54,13 @@ public class Certificate {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getCertificate_type() {
+        return certificate_type;
+    }
+
+    public void setCertificate_type(String certificate_type) {
+        this.certificate_type = certificate_type;
     }
 }

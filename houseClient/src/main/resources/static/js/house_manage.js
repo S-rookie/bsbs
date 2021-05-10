@@ -245,7 +245,8 @@ function uploadData(data) {
             , data: {
                 "access_token": token.access_token,
                 "house_id": data.houseid,
-                "user_id": data.userid
+                "user_id": data.userid,
+                "certificate_type": '房源审核',
             }
             , accept: 'file'//文件类型
             , size: 51200//大小

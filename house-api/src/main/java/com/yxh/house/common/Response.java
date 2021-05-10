@@ -3,10 +3,12 @@ package com.yxh.house.common;
 import lombok.Builder;
 import lombok.Data;
 
+import java.io.Serializable;
+
 
 @Data
 @Builder
-public class Response {
+public class Response implements Serializable {
     private int code;
     private String msg;
     private Object data;

@@ -23,7 +23,7 @@
     </update>
     <select id="selectOrder" resultType="java.util.Map"  parameterType="java.lang.Integer">
       SELECT
-      o.id,o.user_id, o.house_id, o.start_time, o.end_time, o.status, o.remark,o.create_time,o.close,o.define,
+      o.id,o.user_id, o.house_id, o.start_time, o.end_time, o.status, o.remark,o.create_time,
       h.user_id u_user_id, h.title, h.area, h.rent, h.type_a, h.type_b, h.type_c, h.type_d, h.style, h.pay_a, h.pay_b, h.info, h.addr_id, h.addr_detail, h.create_time house_create_time, h.status house_status,
       u.nick_name,u.id_card,u.phone,
       u1.nick_name u_nick_name,u1.id_card u_id_card,u1.phone u_phone
@@ -37,12 +37,6 @@
             </if>
            	<if test="owen_id != null">
                AND u1.id = #{owen_id}
-            </if>
-            <if test="close != null">
-               AND o.close = #{close}
-            </if>
-            <if test="define != null">
-               AND o.define = #{define}
             </if>
         </where>
     </select>
