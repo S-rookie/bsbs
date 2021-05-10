@@ -25,6 +25,9 @@ public class ReserveService {
     }
 
     public int updateReserve(Reserve reserve){
+        if (reserve.getClose() == 1){
+            reserve.setStatus(999);
+        }
         return reserveMapper.updateReserve(reserve);
     }
 

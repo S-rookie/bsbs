@@ -145,7 +145,10 @@ layui.use(['table', 'jquery'], function () {
         let data = obj.data;
         switch (obj.event) {
             case 'del':
-                debugger
+                if (data.reservestate=='999'){
+                    layer.msg('已取消');
+                    break;
+                }
                 layer.confirm('真的取消么', function (index) {
                 	 $.ajax({
                      	url:'http://localhost:8080/reserve/update',
