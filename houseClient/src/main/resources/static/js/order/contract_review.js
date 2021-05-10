@@ -105,8 +105,20 @@ layui.use(['table', 'jquery'], function () {
         switch (obj.event) {
             case 'orderSigned':
             	if(data.status === false){
-            		layer.msg('没有认证，认证去吧', {icon: 2, time: 1000});
-            		return false;
+                    $.ajax({
+                        url:'http://localhost:8080/order/update',
+                        type:'POST',
+                        data:{'id': data.contractid,'define':define^2,"access_token": token.access_token},
+                        success:function(res){
+                            layer.msg('修改成功', {icon: 1, time: 1000});
+                            obj.update({
+                                'define':(define^2)
+                            });
+                        },
+                        error:function(){
+                            layer.msg('修改失败', {icon: 2, time: 1000});
+                        }
+                    });
             	}
             	let define = data.define;
             	if((define & 2) === 2){
