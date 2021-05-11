@@ -183,11 +183,18 @@ function uploadData(data) {
     layui.use('upload', function () {
         let upload = layui.upload;
         let $ = layui.jquery;
-        let id = data.houseid;
+        let token = get_LocalStorage('TOKEN');
         upload.render({
             elem: '#file', //绑定元素
-            url: '/file/' //上传接口
+            url: 'http://localhost:8080/common/upload' //上传接口
             , method: 'post'//默认post
+            , data: {
+                "access_token": token.access_token,
+                "house_id": data.houseid,
+                "user_id": data.ownerid,
+                "certificate_type": '222',
+                "author_role": 0
+            }
             , accept: 'file'//文件类型
             , size: 51200//大小
             , exts: 'zip|rar|7z|doc|txt|docx|rtf|pdf|gz|arj'//允许后缀
@@ -196,6 +203,7 @@ function uploadData(data) {
             , done: function (res) {
                 console.log('上传完毕回调');
                 //上传完毕回调
+                layer.msg("文件上传成功")
             }
             , error: function () {
                 console.log('请求异常回调');

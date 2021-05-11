@@ -50,7 +50,7 @@ public class OrderService {
         return new PageInfo<>(maps);
     }
 
-    public Certificate searchContract(Certificate certificate) {
+    public List<Certificate> searchContract(Certificate certificate) {
         return certificateMapper.selectContractByHouseId(certificate);
     }
 }

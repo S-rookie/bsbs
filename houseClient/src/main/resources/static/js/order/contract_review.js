@@ -10,7 +10,7 @@ layui.use(['table', 'jquery'], function () {
         elem: '#renthourse'//表格绑定 根据id绑定
         , url: url //请求地址
         , method: 'POST'//请求方法
-        , where: {"access_token": token.access_token, 'owen_id': user.id,'close':0}
+        , where: {"access_token": token.access_token, 'owen_id': user.id, 'close': 0}
         , request: {
             pageName: 'pageNum' //页码的参数名称，默认：page
             , limitName: 'pageSize' //每页数据量的参数名，默认：limit
@@ -32,7 +32,7 @@ layui.use(['table', 'jquery'], function () {
         , toolbar: '#toolbar' //开启表格头部工具栏区域 左边图标
         , title: '房东房屋表格'//定义 table 的大标题（在文件导出等地方会用到
         , totalRow: false // 开启合计行
-        ,text: {
+        , text: {
             none: '暂无相关数据' //默认：无数据。注：该属性为 layui 2.2.5 开始新增
         }
         , cols: [
@@ -80,7 +80,7 @@ layui.use(['table', 'jquery'], function () {
             }
                 , {field: 'remark', title: '备注', width: 100}
                 , {field: 'status', title: '认证状态', width: 100, sort: true, templet: '#checkboxTp2'}
-                 ,{field: 'define', title: '签订状态', width: 100, sort: true, templet: '#checkboxTp3'} 
+                , {field: 'define', title: '签订状态', width: 100, sort: true, templet: '#checkboxTp3'}
                 , {fixed: 'right', title: '操作', toolbar: '#bar', width: 240}
             ]
         ]
@@ -103,57 +103,52 @@ layui.use(['table', 'jquery'], function () {
         let data = obj.data;
         // console.log(obj);
         switch (obj.event) {
-            case 'orderSigned':
-            	if(data.status === false){
-                    $.ajax({
-                        url:'http://localhost:8080/order/update',
-                        type:'POST',
-                        data:{'id': data.contractid,'define':define^2,"access_token": token.access_token},
-                        success:function(res){
-                            layer.msg('修改成功', {icon: 1, time: 1000});
-                            obj.update({
-                                'define':(define^2)
-                            });
-                        },
-                        error:function(){
-                            layer.msg('修改失败', {icon: 2, time: 1000});
-                        }
-                    });
-            	}
-            	let define = data.define;
-            	if((define & 2) === 2){
-            		layer.msg('你已经确认了', {icon: 2, time: 1000});
-            		return false;
-            	}
-            	 layer.confirm('真的确认了么，不可修改的哦', function (index) {
-                     $.ajax({
-                     	url:'http://localhost:8080/order/update',
-                     	type:'POST',
-                     	data:{'id': data.contractid,'define':define^2,"access_token": token.access_token},
-                     	success:function(res){
-                     		layer.msg('修改成功', {icon: 1, time: 1000});
-                     		obj.update({
-                     			'define':(define^2)
-                     		});
-                     	},
-                     	error:function(){
-                     		layer.msg('修改失败', {icon: 2, time: 1000});
-                     	}
-                     });
-                     layer.close(index);
-                 });
+            case 'check':
+                layer.confirm('真的删除行么', function (index) {
+                    if (data.status == 0 || data.status == 100) {
+                        data.status = 1; // 审核通过
+                        $.ajax({
+                            url: 'http://localhost:8080/order/update',
+                            type: 'POST',
+                            data: {'id': data.contractid,"house_id": data.houseid,"status":data.status,"checkSign": true, "access_token": token.access_token},
+                            success: function (res) {
+                                layer.msg('修改成功', {icon: 1, time: 1000});
+                                obj.update({
+                                    'define': (define ^ 2)
+                                });
+                            },
+                            error: function () {
+                                layer.msg('修改失败', {icon: 2, time: 1000});
+                            }
+                        });
+                    }
+                    layer.close(index);
+                });
+                let define = data.define;
+                if ((define & 2) === 2) {
+                    layer.msg('你已经确认了', {icon: 2, time: 1000});
+                    return false;
+                }
                 break;
-            case 'seeContract':
-                // layer.open({
-                //     type: 1,
-                //     shade: 0.8,
-                //     offset: 'auto',
-                //     area: [250 + 'px', 200 + 'px'],
-                //     shadeClose: true,//点击外围关闭弹窗
-                //     scrollbar: false,//不现实滚动条
-                //     title: "文件上传", //不显示标题
-                //     content: $('#file') //捕获的元素，注意：最好该指定的元素要存放在body最外层，否则可能被其它的相对元素所影响
+                // layer.confirm('真的确认了么，不可修改的哦', function (index) {
+                //     $.ajax({
+                //         url: 'http://localhost:8080/order/update',
+                //         type: 'POST',
+                //         data: {'id': data.contractid, 'define': define ^ 2, "access_token": token.access_token},
+                //         success: function (res) {
+                //             layer.msg('修改成功', {icon: 1, time: 1000});
+                //             obj.update({
+                //                 'define': (define ^ 2)
+                //             });
+                //         },
+                //         error: function () {
+                //             layer.msg('修改失败', {icon: 2, time: 1000});
+                //         }
+                //     });
+                //     layer.close(index);
                 // });
+                // break;
+            case 'seeContract':
                 show_contract(data);
                 break;
         }
@@ -164,7 +159,7 @@ layui.use(['table', 'jquery'], function () {
         let user = get_LocalStorage("USER");
         let list = data.data[0].list;
         let swap = [];
-        for(let i = 0,len = list.length; i < len; i++ ){
+        for (let i = 0, len = list.length; i < len; i++) {
             swap[i] = {
                 'contractid': list[i].id,
                 'ownerid': list[i].u_user_id,
@@ -181,7 +176,8 @@ layui.use(['table', 'jquery'], function () {
                 'startdate': list[i].start_time,
                 'enddata': list[i].end_time,
                 "remark": list[i].remark,
-                'status': list[i].status == 0 ? false : true,
+                // 'status': list[i].status == 0 ? false : true,
+                'status': list[i].status,
                 'define': list[i].define
             }
         }
@@ -226,20 +222,20 @@ function uploadData(data) {
 }
 
 // 查看
-function show_contract(data){
+function show_contract(data) {
     let $ = layui.jquery;
     const certificate_type = '合同';
     let token = get_LocalStorage('TOKEN');
     console.log(data)
     layui.use('jquery', function () {
         $.ajax({
-            url:'http://localhost:8080/order/showContract',
-            type:'POST',
-            data:{'house_id': data.houseid,"certificate_type": certificate_type,"access_token": token.access_token},
+            url: 'http://localhost:8080/order/showContract',
+            type: 'POST',
+            data: {'house_id': data.houseid, "certificate_type": certificate_type, "access_token": token.access_token},
             responseType: 'blob',
-            success:function(res){
+            success: function (res) {
                 layer.msg('查询成功', {icon: 1, time: 1000});
-                const blob = new Blob([res],{type:"text/plain"})
+                const blob = new Blob([res], {type: "text/plain"})
                 let downloadElement = document.createElement('a');
                 let href = window.URL.createObjectURL(blob);
                 downloadElement.href = href;
@@ -252,7 +248,7 @@ function show_contract(data){
                 // 释放掉blob对象
                 window.URL.revokeObjectURL(href);
             },
-            error:function(){
+            error: function () {
                 layer.msg('修改失败', {icon: 2, time: 1000});
             }
         });

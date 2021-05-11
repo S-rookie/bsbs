@@ -25,5 +25,8 @@ public class Order {
     private Integer close;
     private Integer define;
 
+    private boolean checkSign = false;
+
+    private boolean finalSign = false;
 
 }

@@ -16,6 +16,8 @@ public class Certificate {
 
     String certificate_type;
 
+    String author_role;
+
     public Integer getId() {
         return id;
     }
@@ -62,5 +64,13 @@ public class Certificate {
 
     public void setCertificate_type(String certificate_type) {
         this.certificate_type = certificate_type;
+    }
+
+    public String getAuthor_role() {
+        return author_role;
+    }
+
+    public void setAuthor_role(String author_role) {
+        this.author_role = author_role;
     }
 }

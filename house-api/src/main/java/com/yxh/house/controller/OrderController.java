@@ -9,6 +9,7 @@ import com.yxh.house.common.Groups;
 import com.yxh.house.common.Response;
 import com.yxh.house.pojo.Certificate;
 import com.yxh.house.pojo.Order;
+import com.yxh.house.service.CertificateService;
 import com.yxh.house.service.OrderService;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,12 +24,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.Arrays;
+import java.util.List;
 
 
 @RestController
 @RequestMapping("order")
 public class OrderController {
     private OrderService orderService;
+
+    @Autowired
+    CertificateService certificateService;
 
     @Autowired
     public OrderController(OrderService orderService) {
@@ -40,6 +45,20 @@ public class OrderController {
     }
     @RequestMapping("update")
     public Response update(@Validated(value = {Groups.Update.class}) Order order){
+        if (order.isCheckSign()){
+            Certificate certificate = new Certificate();
+            certificate.setHouse_id(order.getHouse_id());
+            certificate.setCertificate_type("222");
+            List<Certificate> certificates = certificateService.searchCertificate(certificate);
+            Order o = new Order();
+            if (certificates.size() == 1){
+                o.setStatus(100);
+                return Response.Success(orderService.updateOrder(o));
+            }else if (certificates.size() == 2){
+                o.setStatus(1);
+                return Response.Success(orderService.updateOrder(o));
+            }
+        }
         return Response.Success(orderService.updateOrder(order));
     }
     @RequestMapping("list")
@@ -60,8 +79,8 @@ public class OrderController {
         Certificate certificate = new Certificate();
         certificate.setHouse_id(Integer.parseInt(houseId));
         certificate.setCertificate_type(cerType);
-        Certificate cer = orderService.searchContract(certificate);
-        byte[] cerBytes = Convert.hexToBytes(cer.getUrl());
+        List<Certificate> certificates = orderService.searchContract(certificate);
+        byte[] cerBytes = Convert.hexToBytes(certificates.get(0).getUrl());
         OutputStream baos = new ByteArrayOutputStream();
         // 转换成 FileOutputStream
 //        FileCopyUtils.copy();

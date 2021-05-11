@@ -12,14 +12,8 @@
           <if test="status != null">
               status = #{status},
           </if>
-          <if test="close != null">
-              close = #{close},
-          </if>
-          <if test="define != null">
-              define = #{define},
-          </if>
       </set>
-        WHERE id = #{id}
+        WHERE id = #{id};
     </update>
     <select id="selectOrder" resultType="java.util.Map"  parameterType="java.lang.Integer">
       SELECT
