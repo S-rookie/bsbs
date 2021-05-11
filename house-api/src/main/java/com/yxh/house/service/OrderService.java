@@ -53,4 +53,8 @@ public class OrderService {
     public List<Certificate> searchContract(Certificate certificate) {
         return certificateMapper.selectContractByHouseId(certificate);
     }
+
+    public List<Order> searchOrderById(Integer id){
+        return orderMapper.selectOrderById(id);
+    }
 }

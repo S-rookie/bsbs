@@ -105,7 +105,7 @@ layui.use(['table', 'jquery'], function () {
         // console.log(obj);
         switch (obj.event) {
             case 'orderSigned':
-                if(!data.status === 900){
+                if(!(data.status == 900) && !(data.status != 1)){
                     layer.msg('没有认证，认证去吧', {icon: 2, time: 1000});
                     return false;
                 }
@@ -119,7 +119,7 @@ layui.use(['table', 'jquery'], function () {
                     $.ajax({
                         url:'http://localhost:8080/order/update',
                         type:'POST',
-                        data:{'id': data.contractid,"status": data.status,"access_token": token.access_token},
+                        data:{'id': data.contractid,"finalSign": true,"access_token": token.access_token},
                         success:function(res){
                             layer.msg('修改成功', {icon: 1, time: 1000});
                             obj.update({
@@ -155,7 +155,7 @@ layui.use(['table', 'jquery'], function () {
         let list = data.data[0].list;
         let swap = [];
         for(let i = 0,len = list.length; i < len; i++ ){
-            var authorRole = load_certificate(list[i].house_id);
+            var authorRole = load_certificate(list[i]);
             console.log(authorRole)
             swap[i] = {
                 'contractid': list[i].id,
@@ -247,6 +247,7 @@ function get_LocalStorage(key) {
 
 function load_certificate(data){
     let $ = layui.jquery;
+    let hi = data.house_id;
     let token = get_LocalStorage('TOKEN');
     var result = '';
     layui.use('jquery', function () {
@@ -254,13 +255,14 @@ function load_certificate(data){
             url: 'http://localhost:8080/certificate/searchCertificate',
             type: 'POST',
             async: false,
-            data: {'house_id': data, "certificate_type": '222', "access_token": token.access_token},
-            responseType: 'blob',
+            data: {'house_id': hi, "certificate_type": '222', "access_token": token.access_token},
             success: function (res) {
-                if (res.data.length == 2){
-
-                }
-                result = res.data[0].author_role;
+                // if (data.){
+                //     result = 99;
+                // }
+                // else {
+                //     result =
+                // }
             },
             error: function () {
                 layer.msg('查询出错', {icon: 2, time: 1000});

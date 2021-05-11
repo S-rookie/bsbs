@@ -45,6 +45,7 @@ public class OrderController {
     }
     @RequestMapping("update")
     public Response update(@Validated(value = {Groups.Update.class}) Order order){
+        // 上传合同
         if (order.isCheckSign()){
             Certificate certificate = new Certificate();
             certificate.setHouse_id(order.getHouse_id());
@@ -58,6 +59,20 @@ public class OrderController {
                 o.setStatus(1);
                 return Response.Success(orderService.updateOrder(o));
             }
+        }
+        // 签订
+        if (order.isFinalSign()){
+            Order o = new Order();
+            // 先查询状态是不是 900
+            List<Order> orders = orderService.searchOrderById(order.getId());
+            // 如果是900 直接改为 999
+            if (orders.get(0).getStatus() == 900){
+                o.setStatus(999);
+            }else if (order.getStatus() == 1){
+                // 如果不是说明第一个
+                o.setStatus(900);
+            }
+            return Response.Success(orderService.updateOrder(o));
         }
         return Response.Success(orderService.updateOrder(order));
     }
