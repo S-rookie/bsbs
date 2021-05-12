@@ -90,23 +90,25 @@ layui.use(['table', 'jquery'], function () {
         , loading: false
     });
 
-    var e = layui.$, active = {
-        reload: function(){
-            var demoReload = $('#demoReload');
+    $('.layui-btn').click(function () {
+        var inputVal = $('.layui-input').val()
+        table.reload('renthourse', {
+            url: 'http://localhost:8080/order/list '
+            ,methods:"post"
+            ,request: {
+                pageName: 'page' //页码的参数名称，默认：page
+                ,limitName: 'pageSize' //每页数据量的参数名，默认：limit
+            }
+            ,where: {
+                query : inputVal
+            }
+            ,page: {
+                curr: 1
+            }
+        });
+    })
 
-            //执行重载
-            table.reload('testReload', {
-                page: {
-                    curr: 1 //重新从第 1 页开始
-                }
-                ,where: {
-                    key: {
-                        id: demoReload.val()
-                    }
-                }
-            });
-        }
-    };
+
 
     //工具栏事件
     table.on('toolbar(order)', function (obj) {
@@ -292,5 +294,5 @@ function load_certificate(data) {
 }
 
 function searchAc() {
-    
+
 }
