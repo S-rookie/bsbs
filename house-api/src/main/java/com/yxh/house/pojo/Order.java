@@ -29,4 +29,5 @@ public class Order {
 
     private boolean finalSign = false;
 
+    private String editRole;
 }

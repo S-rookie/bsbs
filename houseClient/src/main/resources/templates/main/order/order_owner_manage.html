@@ -12,9 +12,14 @@
     <div class="layui-row">
         <table class="layui-hide" id="renthourse" lay-filter="order"></table>
         <script type="text/html" id="toolbar">
-            <div class="layui-btn-container">
-                <button class="layui-btn layui-btn-sm" lay-event="flush"><i class="layui-icon layui-icon-refresh" style="font-size: 20px; color: #f9ff20;"></i></button>
-            </div>
+                <div class="layui-btn-container">
+                    <div class="layui-form-item">
+                        <button class="layui-btn layui-btn-sm" lay-event="flush"><i
+                                class="layui-icon layui-icon-refresh" style="font-size: 20px; color: #f9ff20;"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
         </script>
 
         <script type="text/html" id="bar">
@@ -30,9 +35,9 @@
         <script type="text/html" id="idcard1">
             {{#
             var plusXing = function (str) {
-				 if(str === null){
-                    return '无数据'
-                }
+            if(str === null){
+            return '无数据'
+            }
             return str.substring(0, 6) + "**********" + str.substring(str.length - 2);
             };
             }}
@@ -42,9 +47,9 @@
         <script type="text/html" id="idcard2">
             {{#
             var plusXing = function (str) {
-				 if(str === null){
-                    return '无数据'
-                }
+            if(str === null){
+            return '无数据'
+            }
             return str.substring(0, 6) + "**********" + str.substring(str.length - 2);
             };
             }}
@@ -61,7 +66,7 @@
             {{#  } }}
         </script>
 
-         <script type="text/html" id="checkboxTp3">
+        <script type="text/html" id="checkboxTp3">
             {{#   if( d.status === 999 ){  }}
             <i class="layui-icon layui-icon-auz" style="font-size: 30px; color: #1E9FFF; margin-left: 20px"></i>
             {{# }else if( d.status === 2900 ){ }}

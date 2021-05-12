@@ -53,7 +53,12 @@ public class OrderController {
             List<Certificate> certificates = certificateService.searchCertificate(certificate);
             Order o = new Order();
             if (certificates.size() == 1){
-                o.setStatus(100);
+                int i = Integer.parseInt(certificates.get(0).getAuthor_role());
+                if (i == 0) {
+                    o.setStatus(1100);
+                } else {
+                    o.setStatus(2100);
+                }
                 return Response.Success(orderService.updateOrder(o));
             }else if (certificates.size() == 2){
                 o.setStatus(1);
@@ -62,15 +67,20 @@ public class OrderController {
         }
         // 签订
         if (order.isFinalSign()){
-            Order o = new Order();
-            // 先查询状态是不是 900
             List<Order> orders = orderService.searchOrderById(order.getId());
-            // 如果是900 直接改为 999
-            if (orders.get(0).getStatus() == 900){
+            Order res = orders.get(0);
+            Order o = new Order();
+            o.setId(res.getId());
+            if (res.getStatus() == 1900 || res.getStatus() == 2900){
                 o.setStatus(999);
-            }else if (order.getStatus() == 1){
+            }else if (res.getStatus() == 1){
                 // 如果不是说明第一个
-                o.setStatus(900);
+                if (Integer.parseInt(res.getEditRole()) == 0) {
+                    // 租客
+                    o.setStatus(1900);
+                }else {
+                    o.setStatus(2900);
+                }
             }
             return Response.Success(orderService.updateOrder(o));
         }

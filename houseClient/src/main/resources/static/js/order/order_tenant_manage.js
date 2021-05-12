@@ -99,40 +99,41 @@ layui.use(['table', 'jquery'], function () {
         switch (obj.event) {
             case 'payCost':
                 layer.confirm('确认支付', function (index) {
-                	
                     layer.close(index);
                 });
                 break;
             case 'orderSigned':
-            	if(data.status === false){
-            		layer.msg('没有认证，认证去吧', {icon: 2, time: 1000});
-            		return false;
-            	}
-            	let define = data.define;
-            	if((define & 1) === 1){
-            		layer.msg('你已经确认了', {icon: 1, time: 1000});
-            		return false;
-            	}
-            	 layer.confirm('真的确认了么，不可修改的哦', function (index) {
-            		 
-                     $.ajax({
-                     	url:'http://localhost:8080/order/update',
-                     	type:'POST',
-                     	data:{'id': data.contractid,'define':define^1,"access_token": token.access_token},
-                     	success:function(res){
-                     		layer.msg('修改成功', {icon: 1, time: 1000});
-                     		obj.update({
-                     			'define':(define^1)
-                     		});
-                     	},
-                     	error:function(){
-                     		layer.msg('修改失败', {icon: 2, time: 1000});
-                     	}
-                     });
-                     layer.close(index);
-                 });
+                if (data.status == 999 || data.status == 1900){
+                    layer.msg('已经签过了', {icon: 2, time: 1000});
+                    break;
+                }else if (data.status == 1 || data.status == 2900) {
+                    layer.confirm('真的确认了么，不可修改的哦', function (index) {
+                        $.ajax({
+                            url: 'http://localhost:8080/order/update',
+                            type: 'POST',
+                            data: {'id': data.contractid, "finalSign": true,"editRole": '0', "access_token": token.access_token},
+                            success: function (res) {
+                                layer.msg('修改成功', {icon: 1, time: 1000});
+                                obj.update({
+                                    'define': (define ^ 1)
+                                });
+                            },
+                            error: function () {
+                                layer.msg('修改失败', {icon: 2, time: 1000});
+                            }
+                        });
+                        layer.close(index);
+                    });
+                }else {
+                    layer.msg('等待认证')
+                }
                 break;
             case 'upOrder':
+                var cer = load_certificate(data);
+                if (cer[0].length == 2 || (cer[0].length == 1 && cer[0].author_role ==1)){
+                    layer.msg('已经上传过了');
+                    break;
+                }
                 layer.open({
                     type: 1,
                     shade: 0.8,
@@ -155,6 +156,15 @@ function Apt_reserve(data) {
     let list = data.data[0].list;
     let swap = [];
     for(let i = 0,len = list.length; i < len; i++ ){
+        var cer = load_certificate(list[i]);
+        var sign = 0;
+        if (cer[0].length == 2){
+            //  等待审核
+            sign = 111;
+        }else if (data.status == 1100){
+            // 等待房东上传
+            sign = 222;
+        }
         swap[i] = {
             'contractid': list[i].id,
             'ownerid': list[i].u_user_id,
@@ -171,8 +181,9 @@ function Apt_reserve(data) {
             'startdate': list[i].start_time,
             'enddata': list[i].end_time,
             "remark": list[i].remark,
-            'status': list[i].status === 0 ? false : true,
-            'define':list[i].define
+            'status': list[i].status,
+            'define':list[i].define,
+            'sign': sign
         }
     }
     return swap;
@@ -237,5 +248,28 @@ function get_LocalStorage(key) {
     return null;
 }
 
+
+
+function load_certificate(data) {
+    let $ = layui.jquery;
+    let hi = data.house_id;
+    let token = get_LocalStorage('TOKEN');
+    var result = '';
+    layui.use('jquery', function () {
+        $.ajax({
+            url: 'http://localhost:8080/certificate/searchCertificate',
+            type: 'POST',
+            async: false,
+            data: {'house_id': hi, "certificate_type": '222', "access_token": token.access_token},
+            success: function (res) {
+                result = res.data;
+            },
+            error: function () {
+                layer.msg('查询出错', {icon: 2, time: 1000});
+            }
+        });
+    });
+    return result;
+}
 
 

@@ -104,13 +104,35 @@ layui.use(['table', 'jquery'], function () {
         // console.log(obj);
         switch (obj.event) {
             case 'check':
+                var cer = load_certificate(data);
+                console.log(cer)
+                var canCheck = 0;
+                if (cer[0].length == 2 && (data.status == 1100 || data.status == 2100)) {
+                    canCheck = 111;
+                } else if (cer[0].length == 1) {
+                    canCheck = 222;
+                }
+                if (canCheck == 222 || cer[0].length == 0) {
+                    layer.msg('等待上传')
+                    break;
+                }
+                if (canCheck == 0){
+                    layer.msg('已经审核过')
+                    break;
+                }
                 layer.confirm('真的删除行么', function (index) {
                     if (data.status == 0 || data.status == 100) {
                         data.status = 1; // 审核通过
                         $.ajax({
                             url: 'http://localhost:8080/order/update',
                             type: 'POST',
-                            data: {'id': data.contractid,"house_id": data.houseid,"status":data.status,"checkSign": true, "access_token": token.access_token},
+                            data: {
+                                'id': data.contractid,
+                                "house_id": data.houseid,
+                                "status": data.status,
+                                "checkSign": true,
+                                "access_token": token.access_token
+                            },
                             success: function (res) {
                                 layer.msg('修改成功', {icon: 1, time: 1000});
                                 obj.update({
@@ -130,24 +152,6 @@ layui.use(['table', 'jquery'], function () {
                     return false;
                 }
                 break;
-                // layer.confirm('真的确认了么，不可修改的哦', function (index) {
-                //     $.ajax({
-                //         url: 'http://localhost:8080/order/update',
-                //         type: 'POST',
-                //         data: {'id': data.contractid, 'define': define ^ 2, "access_token": token.access_token},
-                //         success: function (res) {
-                //             layer.msg('修改成功', {icon: 1, time: 1000});
-                //             obj.update({
-                //                 'define': (define ^ 2)
-                //             });
-                //         },
-                //         error: function () {
-                //             layer.msg('修改失败', {icon: 2, time: 1000});
-                //         }
-                //     });
-                //     layer.close(index);
-                // });
-                // break;
             case 'seeContract':
                 show_contract(data);
                 break;
@@ -160,6 +164,14 @@ layui.use(['table', 'jquery'], function () {
         let list = data.data[0].list;
         let swap = [];
         for (let i = 0, len = list.length; i < len; i++) {
+            var cer = load_certificate(list[i]);
+            // 111 可以审核 222 等待
+            var canCheck = 0;
+            if (cer[0].length == 2 && (list[i].status == 1100 || list[i].status == 2100)){
+                canCheck = 111;
+            }else if(cer[0].length == 1){
+                canCheck = 222;
+            }
             swap[i] = {
                 'contractid': list[i].id,
                 'ownerid': list[i].u_user_id,
@@ -178,7 +190,8 @@ layui.use(['table', 'jquery'], function () {
                 "remark": list[i].remark,
                 // 'status': list[i].status == 0 ? false : true,
                 'status': list[i].status,
-                'define': list[i].define
+                'define': list[i].define,
+                'canCheck': canCheck
             }
         }
         return swap;
@@ -224,7 +237,7 @@ function uploadData(data) {
 // 查看
 function show_contract(data) {
     let $ = layui.jquery;
-    const certificate_type = '合同';
+    const certificate_type = 222;
     let token = get_LocalStorage('TOKEN');
     console.log(data)
     layui.use('jquery', function () {
@@ -276,5 +289,27 @@ function get_LocalStorage(key) {
         }
     }
     return null;
+}
+
+function load_certificate(data) {
+    let $ = layui.jquery;
+    let order_id = data.id;
+    let token = get_LocalStorage('TOKEN');
+    var result = '';
+    layui.use('jquery', function () {
+        $.ajax({
+            url: 'http://localhost:8080/certificate/searchCertificate',
+            type: 'POST',
+            async: false,
+            data: {'house_id':data.house_id,'order_id': order_id, "certificate_type": '222', "access_token": token.access_token},
+            success: function (res) {
+                result = res.data;
+            },
+            error: function () {
+                layer.msg('查询出错', {icon: 2, time: 1000});
+            }
+        });
+    });
+    return result;
 }
 

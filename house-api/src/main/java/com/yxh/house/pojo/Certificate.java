@@ -18,6 +18,8 @@ public class Certificate {
 
     String author_role;
 
+    Integer house_or_order_id;
+
     public Integer getId() {
         return id;
     }
@@ -72,5 +74,13 @@ public class Certificate {
 
     public void setAuthor_role(String author_role) {
         this.author_role = author_role;
+    }
+
+    public Integer getHouse_or_order_id() {
+        return house_or_order_id;
+    }
+
+    public void setHouse_or_order_id(Integer house_or_order_id) {
+        this.house_or_order_id = house_or_order_id;
     }
 }

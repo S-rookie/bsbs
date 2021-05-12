@@ -1,5 +1,6 @@
 package com.yxh.house.controller;
 
+import cn.hutool.core.util.StrUtil;
 import com.yxh.house.common.Response;
 import com.yxh.house.pojo.Certificate;
 import com.yxh.house.service.CertificateService;
@@ -21,14 +22,25 @@ public class CertificateController {
     @Autowired
     OrderService orderService;
 
+    @Autowired
+    CertificateService certificateService;
+
     @RequestMapping("/searchCertificate")
     public Response searchCertificate(HttpServletRequest request){
         String houseId = request.getParameter("house_id");
         String cerType = request.getParameter("certificate_type");
+        String orderId = request.getParameter("order_id");
         Certificate certificate = new Certificate();
-        certificate.setHouse_id(Integer.parseInt(houseId));
-        certificate.setCertificate_type(cerType);
-        List<Certificate> certificates = orderService.searchContract(certificate);
+        if (!StrUtil.isEmpty(houseId)){
+            certificate.setHouse_id(Integer.parseInt(houseId));
+        }
+        if (!StrUtil.isEmpty(cerType)){
+            certificate.setCertificate_type(cerType);
+        }
+        if (!StrUtil.isEmpty(orderId)){
+            certificate.setHouse_or_order_id(Integer.parseInt(orderId));
+        }
+        List<Certificate> certificates = certificateService.selectCertificateByOrder(certificate);
         if (certificates.size() != 0){
             return Response.Success(certificates);
         }

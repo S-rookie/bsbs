@@ -20,6 +20,6 @@ public interface OrderMapper {
 			@Param("close") Integer close,
 			@Param("define") Integer define);
 
-	@Select("select * from order where id = #{id}")
+	@Select("select * from `order` where id = #{id}")
 	List<Order> selectOrderById(@Param("id") Integer id);
 }

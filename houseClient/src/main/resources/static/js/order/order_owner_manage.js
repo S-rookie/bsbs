@@ -6,11 +6,12 @@ layui.use(['table', 'jquery'], function () {
     let url = "http://localhost:8080/order/list";
     let token = get_LocalStorage("TOKEN");
     let user = get_LocalStorage("USER");
+
     let retable = table.render({
         elem: '#renthourse'//表格绑定 根据id绑定
         , url: url //请求地址
         , method: 'POST'//请求方法
-        , where: {"access_token": token.access_token, 'owen_id': user.id,'close':0}
+        , where: {"access_token": token.access_token, 'owen_id': user.id, 'close': 0}
         , request: {
             pageName: 'pageNum' //页码的参数名称，默认：page
             , limitName: 'pageSize' //每页数据量的参数名，默认：limit
@@ -33,7 +34,7 @@ layui.use(['table', 'jquery'], function () {
         , toolbar: '#toolbar' //开启表格头部工具栏区域 左边图标
         , title: '房东房屋表格'//定义 table 的大标题（在文件导出等地方会用到
         , totalRow: false // 开启合计行
-        ,text: {
+        , text: {
             none: '暂无相关数据' //默认：无数据。注：该属性为 layui 2.2.5 开始新增
         }
         , cols: [
@@ -81,13 +82,31 @@ layui.use(['table', 'jquery'], function () {
             }
                 , {field: 'remark', title: '备注', width: 100}
                 , {field: 'status', title: '认证状态', width: 100, sort: true, templet: '#checkboxTp2'}
-                ,{field: 'define', title: '签订状态', width: 100, sort: true, templet: '#checkboxTp3'}
+                , {field: 'define', title: '签订状态', width: 100, sort: true, templet: '#checkboxTp3'}
                 , {fixed: 'right', title: '操作', toolbar: '#bar', width: 240}
             ]
         ]
         , page: true //分页开关
         , loading: false
     });
+
+    var e = layui.$, active = {
+        reload: function(){
+            var demoReload = $('#demoReload');
+
+            //执行重载
+            table.reload('testReload', {
+                page: {
+                    curr: 1 //重新从第 1 页开始
+                }
+                ,where: {
+                    key: {
+                        id: demoReload.val()
+                    }
+                }
+            });
+        }
+    };
 
     //工具栏事件
     table.on('toolbar(order)', function (obj) {
@@ -105,47 +124,49 @@ layui.use(['table', 'jquery'], function () {
         // console.log(obj);
         switch (obj.event) {
             case 'orderSigned':
-                if(!(data.status == 900) && !(data.status != 1)){
+                if (!(data.status == 900) && !(data.status != 1)) {
                     layer.msg('没有认证，认证去吧', {icon: 2, time: 1000});
                     return false;
                 }
-                let define = data.define;
-                if((define & 2) === 2){
-                    layer.msg('你已经确认了', {icon: 2, time: 1000});
-                    return false;
-                }
-                layer.confirm('真的确认了么，不可修改的哦', function (index) {
-                    data.status = 900;
-                    $.ajax({
-                        url:'http://localhost:8080/order/update',
-                        type:'POST',
-                        data:{'id': data.contractid,"finalSign": true,"access_token": token.access_token},
-                        success:function(res){
-                            layer.msg('修改成功', {icon: 1, time: 1000});
-                            obj.update({
-                                'define':(define^2)
-                            });
-                        },
-                        error:function(){
-                            layer.msg('修改失败', {icon: 2, time: 1000});
-                        }
+                if (data.status == 1 || data.status == 1900) {
+                    layer.confirm('真的确认了么，不可修改的哦', function (index) {
+                        data.status = 900;
+                        $.ajax({
+                            url: 'http://localhost:8080/order/update',
+                            type: 'POST',
+                            data: {'id': data.contractid, "finalSign": true, "editRole": '1',"access_token": token.access_token},
+                            success: function (res) {
+                                layer.msg('修改成功', {icon: 1, time: 1000});
+                                obj.update({
+                                    'define': (define ^ 2)
+                                });
+                            },
+                            error: function () {
+                                layer.msg('修改失败', {icon: 2, time: 1000});
+                            }
+                        });
+                        layer.close(index);
                     });
-                    layer.close(index);
-                });
+                }else {
+                    layer.msg('已经签过了')
+                }
                 break;
             case 'upOrder':
-                layer.open({
-                    type: 1,
-                    shade: 0.8,
-                    offset: 'auto',
-                    area: [250 + 'px', 200 + 'px'],
-                    shadeClose: true,//点击外围关闭弹窗
-                    scrollbar: false,//不现实滚动条
-                    title: "文件上传", //不显示标题
-                    content: $('#file') //捕获的元素，注意：最好该指定的元素要存放在body最外层，否则可能被其它的相对元素所影响
-                });
-                uploadData(data);
-                break;
+                if ((data.status == 0) || (data.status == 1100)) {
+                    layer.open({
+                        type: 1,
+                        shade: 0.8,
+                        offset: 'auto',
+                        area: [250 + 'px', 200 + 'px'],
+                        shadeClose: true,//点击外围关闭弹窗
+                        scrollbar: false,//不现实滚动条
+                        title: "文件上传", //不显示标题
+                        content: $('#file') //捕获的元素，注意：最好该指定的元素要存放在body最外层，否则可能被其它的相对元素所影响
+                    });
+                    uploadData(data);
+                    break;
+                }
+                layer.msg('已经上传过了')
         }
     });
 
@@ -154,7 +175,7 @@ layui.use(['table', 'jquery'], function () {
         let user = get_LocalStorage("USER");
         let list = data.data[0].list;
         let swap = [];
-        for(let i = 0,len = list.length; i < len; i++ ){
+        for (let i = 0, len = list.length; i < len; i++) {
             var authorRole = load_certificate(list[i]);
             console.log(authorRole)
             swap[i] = {
@@ -230,8 +251,6 @@ function show_house(obj, event) {
 }
 
 
-
-
 function get_LocalStorage(key) {
     let data = JSON.parse(localStorage.getItem(key));
     if (data !== null) {
@@ -245,7 +264,7 @@ function get_LocalStorage(key) {
     return null;
 }
 
-function load_certificate(data){
+function load_certificate(data) {
     let $ = layui.jquery;
     let hi = data.house_id;
     let token = get_LocalStorage('TOKEN');
@@ -270,4 +289,8 @@ function load_certificate(data){
         });
     });
     return result;
+}
+
+function searchAc() {
+    
 }

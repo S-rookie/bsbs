@@ -29,5 +29,5 @@ public interface CertificateMapper {
     @Select("select * from certificate where house_id = #{cer.house_id} and certificate_type = #{cer.certificate_type}")
     public List<Certificate> selectContractByHouseId(@Param("cer") Certificate certificate);
 
-//    Certificate selectCertificateByHouseId(Certificate certificate);
+    List<Certificate> selectCertificateByOrder(@Param("cer") Certificate certificate);
 }
