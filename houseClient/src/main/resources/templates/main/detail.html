@@ -21,16 +21,10 @@
 <script id="demo" type="text/html">
     <div class="layui-row">
         <div class="layui-col-md6 layui-col-xs6">
-<!--            {{#  for( var i=1;i<3;i++ ){ console.log(1) }}-->
-<!--            {{# } }}-->
-
-
-            {{# layui.each(d.images, function(index, item){     }}
-            <img src="{{item}}">
-            {{# });  }}
-
-
-            <!--            <div  class="polaroid">-->
+            {{# layui.each(d.roleTypeList, function(index, item){
+                console.log(item)
+            }}
+<!--            <div class="polaroid">-->
 <!--                <img src={{= d.images }}>-->
 <!--            </div>-->
         </div>

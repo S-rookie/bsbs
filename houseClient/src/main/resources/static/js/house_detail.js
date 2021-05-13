@@ -46,7 +46,8 @@ layui.use(['laytpl', 'jquery', 'layer', 'form'], function () {
                         "username": parm[0].list[i].nick_name,
                         "faci": parm[0].list[i].info,
                         "housestyle": parm[0].list[i].type_a * 1000 + parm[0].list[i].type_b * 100 + parm[0].list[i].type_c * 10 + parm[0].list[i].type_d,
-                        "userid": parm[0].list[i].user_id
+                        "userid": parm[0].list[i].user_id,
+                        "roleTypeList": [1,2,3]
                     };
 
                 }
@@ -176,7 +177,7 @@ layui.use(['laytpl', 'jquery', 'layer', 'form'], function () {
                             layer.close(index);
                             layer.msg('预约成功,快去看看吧', {
                                 icon: 1,
-                                time: 2000 
+                                time: 2000
                             }, function () {
                                 window.location.href = '/index/reserveTenantManage';
                             });
