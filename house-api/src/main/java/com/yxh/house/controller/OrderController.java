@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -92,9 +93,13 @@ public class OrderController {
             Integer owen_id,
             Integer close,
             Integer define,
+            Integer house_id,
+            String nick_name,
+            String owen_name,
             @RequestParam(defaultValue = "1") int pageNum,
-            @RequestParam(defaultValue = "10") int pageSize){
-        return Response.Success(orderService.getOrder(user_id,owen_id,close,define,pageNum,pageSize));
+            @RequestParam(defaultValue = "10") int pageSize,HttpServletRequest request){
+        Map<String, String[]> parameterMap = request.getParameterMap();
+        return Response.Success(orderService.getOrder(user_id,owen_id,close,define,pageNum,pageSize,house_id,nick_name,owen_name));
     }
 
     @RequestMapping("showContract")

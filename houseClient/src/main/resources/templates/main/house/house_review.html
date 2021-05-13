@@ -10,18 +10,6 @@
 <div class="layui-fluid">
     <div th:replace="top/top::top"></div>
     <div class="layui-row">
-        <div>
-            房屋名称
-            <div class="layui-inline">
-                <input class="layui-input" name="title" id="title" autocomplete="off">
-            </div>
-
-            房屋地址
-            <div class="layui-inline">
-                <input class="layui-input" name="addr_detail" id="addr_detail" autocomplete="off">
-            </div>
-            <button class="layui-btn" data-type="reload">搜索</button>
-        </div>
         <table class="layui-hide" id="renthourse" lay-filter="hourse"></table>
         <script type="text/html" id="toolbar">
             <div class="layui-btn-container">
@@ -30,9 +18,9 @@
         </script>
 
         <script type="text/html" id="bar">
-            <a class="layui-btn layui-btn-xs layui-btn-warm" lay-event="attestation">申请认证</a>
-            <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-            <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+            <a class="layui-btn layui-btn-xs layui-btn-warm" lay-event="attestation">查看房源认证资料</a>
+            <a class="layui-btn layui-btn-xs" lay-event="edit">审核</a>
+<!--            <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>-->
         </script>
         <script type="text/html" id="checkboxTp1">
             <input type="checkbox" name="status" value="{{d.id}}" status="{{d.status}}" title="出租状态" lay-filter="status1"
@@ -61,7 +49,7 @@
     </div>
 </div>
 <script src="../../../static/layui/layui.js" th:src="@{/layui/layui.js}"></script>
-<script src="../../../static/js/house_manage.js" th:src="@{/js/house_manage.js}"></script>
+<script src="../../../static/js/house_review.js" th:src="@{/js/house_review.js}"></script>
 </body>
 <div class="layui-form" style="display: none;" id="formedit" lay-filter="formedit" >
     <input type="hidden" name="houseid" lay-verify="required" autocomplete="off" class="layui-input"

@@ -74,6 +74,10 @@ function nva() {
                     errotoken('/showRentManage');
                     break;
                 }
+                case 'house_review_top':{
+                    errotoken('/showHouseReview');
+                    break;
+                }
                 case 'contract_review_top': {
                     errotoken('/admin/showContractReview');
                     break;

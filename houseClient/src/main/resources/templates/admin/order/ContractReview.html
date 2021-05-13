@@ -10,6 +10,19 @@
 <div class="layui-fluid">
     <div th:replace="top/top::top"></div>
     <div class="layui-row">
+        <div>
+            租户id:
+            <div class="layui-inline">
+                <input class="layui-input" name="user_id" id="user_id" autocomplete="off">
+            </div>
+
+            租户名:
+            <div class="layui-inline">
+                <input class="layui-input" name="nick_name" id="nick_name" autocomplete="off">
+            </div>
+
+            <button class="layui-btn" data-type="reload">搜索</button>
+        </div>
         <table class="layui-hide" id="renthourse" lay-filter="order"></table>
         <script type="text/html" id="toolbar">
             <div class="layui-btn-container">

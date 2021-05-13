@@ -158,6 +158,26 @@ layui.use(['table', 'jquery'], function () {
         }
     });
 
+    $('.layui-btn').click(function () {
+        var user_id = document.getElementById('user_id').value;
+        var nick_name = document.getElementById('nick_name').value;
+        table.reload('renthourse', {
+            url: 'http://localhost:8080/order/list '
+            ,methods:"post"
+            ,request: {
+                pageName: 'page'
+                ,limitName: 'pageSize'
+            }
+            ,where: {
+                user_id : user_id,
+                nick_name: nick_name
+            }
+            ,page: {
+                curr: 1
+            }
+        });
+    })
+
     function Apt_reserve(data) {
         // debugger;
         let user = get_LocalStorage("USER");

@@ -47,7 +47,7 @@ public class HouseController {
             House house,
             @RequestParam(defaultValue = "1") int pageNum,
             @RequestParam(defaultValue = "10") int pageSize){
-        return Response.Success(houseService.getHouseList(house,pageNum,pageSize));
+         return Response.Success(houseService.getHouseList(house,pageNum,pageSize));
     }
 
 

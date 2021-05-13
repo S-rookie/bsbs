@@ -76,4 +76,9 @@ public class Controllerhouse {
 //	public String deleteHouseById(){
 //		return "main/house/house_manage";
 //	}
+
+	@RequestMapping("/showHouseReview")
+	public String showHouseReview(){
+		return "main/house/house_review";
+	}
 }

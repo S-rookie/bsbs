@@ -91,6 +91,27 @@ layui.use(['table', 'jquery'], function () {
                 break;
         }
     });
+
+
+    $('.layui-btn').click(function () {
+        var inputVal = $('.layui-input').val()
+        table.reload('renthourse', {
+            url: 'http://localhost:8080/order/list '
+            ,methods:"post"
+            ,request: {
+                pageName: 'page'
+                ,limitName: 'pageSize'
+            }
+            ,where: {
+                owen_name : inputVal,
+            }
+            ,page: {
+                curr: 1
+            }
+        });
+    })
+
+
     //监听行工具事件
     //右侧
     table.on('tool(order)', function (obj) {

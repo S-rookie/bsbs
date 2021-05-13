@@ -44,9 +44,9 @@ public class OrderService {
         return orderMapper.updateOrder(order);
     }
 
-    public PageInfo<Map<Object, Object>> getOrder(Integer user_id,Integer owen_id, Integer close,Integer define,int pageNum,int pageSize){
+    public PageInfo<Map<Object, Object>> getOrder(Integer user_id,Integer owen_id, Integer close,Integer define,int pageNum,int pageSize,Integer house_id,String nick_name,String owen_name){
         PageHelper.startPage(pageNum,pageSize);
-        List<Map<Object, Object>> maps = orderMapper.selectOrder(user_id,owen_id,close,define);
+        List<Map<Object, Object>> maps = orderMapper.selectOrder(user_id,owen_id,close,define,house_id,nick_name,owen_name);
         return new PageInfo<>(maps);
     }
 

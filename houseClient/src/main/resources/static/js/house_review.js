@@ -85,30 +85,6 @@ layui.use(['table', 'jquery'], function () {
                 break;
         }
     });
-
-
-    $('.layui-btn').click(function () {
-        var title = document.getElementById("title").value;
-        var addr_detail = document.getElementById("addr_detail").value;
-        table.reload('renthourse', {
-            url: 'http://localhost:8080/house/list'
-            ,methods:"post"
-            ,request: {
-                pageName: 'page'
-                ,limitName: 'pageSize'
-            }
-            ,where: {
-                title : title,
-                addr_detail: addr_detail
-            }
-            ,page: {
-                curr: 1
-            }
-        });
-    })
-
-
-
     //监听行工具事件
     //右侧
     table.on('tool(hourse)', function (obj) {
@@ -211,16 +187,17 @@ layui.use(['table', 'jquery'], function () {
                 });
                 break;
             case 'attestation':
-                layer.open({
-                    type: 1,
-                    shade: 0.8,
-                    offset: 'auto',
-                    area: [250 + 'px', 200 + 'px'],
-                    shadeClose: true,//点击外围关闭弹窗
-                    scrollbar: false,//不现实滚动条
-                    title: "文件上传", //不显示标题
-                    content: $('#file'), //捕获的元素，注意：最好该指定的元素要存放在body最外层，否则可能被其它的相对元素所影响
-                });
+
+                // layer.open({
+                //     type: 1,
+                //     shade: 0.8,
+                //     offset: 'auto',
+                //     area: [250 + 'px', 200 + 'px'],
+                //     shadeClose: true,//点击外围关闭弹窗
+                //     scrollbar: false,//不现实滚动条
+                //     title: "文件上传", //不显示标题
+                //     content: $('#file'), //捕获的元素，注意：最好该指定的元素要存放在body最外层，否则可能被其它的相对元素所影响
+                // });
                 uploadData(data);
                 break;
         }
@@ -432,6 +409,7 @@ function Apt_house(data) {
         } catch (err) {
             image = "/images/temp/property_01.jpg";
         }
+        var cer = load_certificate(data);
         swaplist[i] = {
             "houseimage": image,
             "housename": swapdata[i].title,
@@ -577,5 +555,32 @@ function Apd_update_submit(data) {
         'addr_detail': data.houseaddress
     };
     return swap;
+}
+
+function load_certificate(data) {
+    let $ = layui.jquery;
+    let hi = data.house_id;
+    let token = get_LocalStorage('TOKEN');
+    var result = '';
+    layui.use('jquery', function () {
+        $.ajax({
+            url: 'http://localhost:8080/certificate/searchCertificate',
+            type: 'POST',
+            async: false,
+            data: {'house_id': hi, "certificate_type": '222', "access_token": token.access_token},
+            success: function (res) {
+                // if (data.){
+                //     result = 99;
+                // }
+                // else {
+                //     result =
+                // }
+            },
+            error: function () {
+                layer.msg('查询出错', {icon: 2, time: 1000});
+            }
+        });
+    });
+    return result;
 }
 

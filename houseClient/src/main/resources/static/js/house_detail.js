@@ -21,7 +21,10 @@ layui.use(['laytpl', 'jquery', 'layer', 'form'], function () {
                 let list = [];
                 for (let i = 0, len = parm[0].list.length; i < len; i++) {
                     let image = null;
+                    var imagess = null;
                     try {
+                        imagess = parm[0].list[i].pics;
+                        imagess = parm[0].list[i].pics;
                         image = parm[0].list[i].pics[0].url
                     } catch (err) {
                         image = "/images/temp/property_01.jpg";

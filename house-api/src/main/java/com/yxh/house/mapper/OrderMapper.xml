@@ -32,6 +32,15 @@
            	<if test="owen_id != null">
                AND u1.id = #{owen_id}
             </if>
+            <if test="house_id != null">
+                AND o.house_id = #{house_id}
+            </if>
+            <if test="nick_name != null">
+                AND u.nick_name like "%"#{nick_name}"%"
+            </if>
+            <if test="owen_name != null">
+                AND u.nick_name like "%"#{owen_name}"%"
+            </if>
         </where>
     </select>
 </mapper>

@@ -11,7 +11,7 @@ layui.use(['table', 'jquery'], function () {
         elem: '#renthourse'//表格绑定 根据id绑定
         , url: url //请求地址
         , method: 'POST'//请求方法
-        , where: {"access_token": token.access_token, 'owen_id': user.id, 'close': 0}
+        , where: {"access_token": token.access_token, 'owen_id': user.id, 'close': 0,}
         , request: {
             pageName: 'pageNum' //页码的参数名称，默认：page
             , limitName: 'pageSize' //每页数据量的参数名，默认：limit
@@ -96,11 +96,11 @@ layui.use(['table', 'jquery'], function () {
             url: 'http://localhost:8080/order/list '
             ,methods:"post"
             ,request: {
-                pageName: 'page' //页码的参数名称，默认：page
-                ,limitName: 'pageSize' //每页数据量的参数名，默认：limit
+                pageName: 'page'
+                ,limitName: 'pageSize'
             }
             ,where: {
-                query : inputVal
+                house_id : inputVal,
             }
             ,page: {
                 curr: 1

@@ -10,6 +10,10 @@
 <div class="layui-fluid">
     <div th:replace="top/top::top"></div>
     <div class="layui-row">
+        房屋编号:
+        <div class="layui-inline">
+            <input class="layui-input" name="keyword" id="demoReload" autocomplete="off">
+        </div>
         <button class="layui-btn" data-type="reload">搜索</button>
         <table class="layui-hide" id="renthourse" lay-filter="order"></table>
         <script type="text/html" id="toolbar">
