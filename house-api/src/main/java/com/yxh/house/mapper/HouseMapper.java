@@ -28,10 +28,11 @@ public interface HouseMapper {
     int deleteHouseById(@Param("house_id") Integer id);
 
     /**
-     * 审核
+     * sd
      * @param id
+     * @param status
      * @return
      */
-    @Update("update house set status = 1 where house_id = #{house_id}")
-    int updateHouseById(@Param("house_id") Integer id);
+    @Update("update house set status = 1 where id = #{house_id} and status = #{status}")
+    int updateHouseById(@Param("house_id") Integer id, @Param("status") String status);
 }

@@ -64,7 +64,12 @@ layui.use(['table', 'jquery'], function () {
                 title: '图片',
                 width: 80,
                 templet: '#img'
-            }
+            },
+                {
+                    title: '房屋详情',
+                    width: 90,
+                    templet: '#houser'
+                },
                 , {field: 'payway', title: '缴费方式', width: 100}
                 , {field: 'housedate', title: '发布时间', width: 100, sort: true}
                 , {field: 'city', title: '出租状态', width: 130, sort: true, templet: '#checkboxTp1'}
@@ -211,17 +216,26 @@ layui.use(['table', 'jquery'], function () {
                 });
                 break;
             case 'attestation':
-                layer.open({
-                    type: 1,
-                    shade: 0.8,
-                    offset: 'auto',
-                    area: [250 + 'px', 200 + 'px'],
-                    shadeClose: true,//点击外围关闭弹窗
-                    scrollbar: false,//不现实滚动条
-                    title: "文件上传", //不显示标题
-                    content: $('#file'), //捕获的元素，注意：最好该指定的元素要存放在body最外层，否则可能被其它的相对元素所影响
-                });
-                uploadData(data);
+                var cer = load_certificate(data);
+                if (data.status == 0 && cer.length == 0) {
+                    layer.open({
+                        type: 1,
+                        shade: 0.8,
+                        offset: 'auto',
+                        area: [250 + 'px', 200 + 'px'],
+                        shadeClose: true,//点击外围关闭弹窗
+                        scrollbar: false,//不现实滚动条
+                        title: "文件上传", //不显示标题
+                        content: $('#file'), //捕获的元素，注意：最好该指定的元素要存放在body最外层，否则可能被其它的相对元素所影响
+                    });
+                    uploadData(data);
+                    break;
+                }else {
+                    layer.msg('已经上传过了')
+                    break
+                }
+                break;
+            default:
                 break;
         }
     });
@@ -270,7 +284,8 @@ function uploadData(data) {
                 "access_token": token.access_token,
                 "house_id": data.houseid,
                 "user_id": data.userid,
-                "certificate_type": '房源审核',
+                "certificate_type": '111',
+                "author_role": '1',
             }
             , accept: 'file'//文件类型
             , size: 51200//大小
@@ -577,5 +592,36 @@ function Apd_update_submit(data) {
         'addr_detail': data.houseaddress
     };
     return swap;
+}
+
+function show_house(obj, event) {
+    layui.use('jquery', function () {
+        let $ = layui.jquery;
+        let id = $(obj).siblings("input[type='hidden']").val().trim();
+        localStorage.setItem('houseid', id);
+        window.location.href = '/index/show_detail';
+    });
+}
+
+function load_certificate(data) {
+    let $ = layui.jquery;
+    let hi = data.house_id;
+    let token = get_localStorage('TOKEN');
+    var result = '';
+    layui.use('jquery', function () {
+        $.ajax({
+            url: 'http://localhost:8080/certificate/searchCertificate',
+            type: 'POST',
+            async: false,
+            data: {'house_id': hi, "certificate_type": '111', "access_token": token.access_token},
+            success: function (res) {
+                result = res.data
+            },
+            error: function () {
+                layer.msg('查询出错', {icon: 2, time: 1000});
+            }
+        });
+    });
+    return result;
 }
 

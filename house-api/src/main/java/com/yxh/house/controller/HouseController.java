@@ -65,8 +65,8 @@ public class HouseController {
     @RequestMapping("houseCheck")
     public Response houseCheck(HttpServletRequest request){
         String id = request.getParameter("house_id");
-        String isPass = request.getParameter("isPass");
-        int i = houseService.updateHouseById(Integer.parseInt(id));
+        String status = request.getParameter("status");
+        int i = houseService.updateHouseById(Integer.parseInt(id),status);
         return Response.Success(i);
     }
 }

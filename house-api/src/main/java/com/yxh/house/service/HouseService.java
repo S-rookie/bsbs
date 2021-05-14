@@ -130,7 +130,7 @@ public class HouseService {
 		return result;
 	}
 
-	public int updateHouseById(Integer id){
-		return houseMapper.updateHouseById(id);
+	public int updateHouseById(Integer id , String status){
+		return houseMapper.updateHouseById(id , status);
 	}
 }

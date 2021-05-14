@@ -1,4 +1,5 @@
 
+
 spring:
   mvc:
     view:
@@ -21,3 +22,4 @@ spring:
 mybatis:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
