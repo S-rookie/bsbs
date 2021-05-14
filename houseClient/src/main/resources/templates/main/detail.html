@@ -21,12 +21,15 @@
 <script id="demo" type="text/html">
     <div class="layui-row">
         <div class="layui-col-md6 layui-col-xs6">
-            {{# layui.each(d.roleTypeList, function(index, item){
-                console.log(item)
-            }}
-<!--            <div class="polaroid">-->
-<!--                <img src={{= d.images }}>-->
-<!--            </div>-->
+
+            {{# layui.each(d.imagess, function(index, item){ console.log(item) }}
+            <div class="polaroid">
+                <img src={{= item.url }}>
+            </div>
+            {{# });  }}
+
+
+
         </div>
         <div class="layui-col-md6 layui-col-xs6">
             <div class="property">

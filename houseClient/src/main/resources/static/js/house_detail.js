@@ -24,7 +24,7 @@ layui.use(['laytpl', 'jquery', 'layer', 'form'], function () {
                     var imagess = null;
                     try {
                         imagess = parm[0].list[i].pics;
-                        imagess = parm[0].list[i].pics;
+                        debugger
                         image = parm[0].list[i].pics[0].url
                     } catch (err) {
                         image = "/images/temp/property_01.jpg";
@@ -47,7 +47,8 @@ layui.use(['laytpl', 'jquery', 'layer', 'form'], function () {
                         "faci": parm[0].list[i].info,
                         "housestyle": parm[0].list[i].type_a * 1000 + parm[0].list[i].type_b * 100 + parm[0].list[i].type_c * 10 + parm[0].list[i].type_d,
                         "userid": parm[0].list[i].user_id,
-                        "roleTypeList": [1,2,3]
+                        "roleTypeList": [1,2,3],
+                        "imagess": imagess
                     };
 
                 }

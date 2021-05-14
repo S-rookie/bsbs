@@ -61,4 +61,12 @@ public class HouseController {
         String id = request.getParameter("house_id");
         return Response.Success(houseService.delHouse(Integer.valueOf(id)));
     }
+
+    @RequestMapping("houseCheck")
+    public Response houseCheck(HttpServletRequest request){
+        String id = request.getParameter("house_id");
+        String isPass = request.getParameter("isPass");
+        int i = houseService.updateHouseById(Integer.parseInt(id));
+        return Response.Success(i);
+    }
 }

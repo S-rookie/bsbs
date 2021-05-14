@@ -1,5 +1,9 @@
 package com.yxh.house.service;
 
+import cn.hutool.core.codec.Base64Encoder;
+import cn.hutool.core.convert.Convert;
+import cn.hutool.core.io.FileUtil;
+import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.yxh.house.mapper.HouseMapper;
@@ -81,7 +85,7 @@ public class HouseService {
 		if (files == null) {
 			return i;
 		}
-		addHousePic(files, request, house.getId(), 1);
+		saveHousePicToBase64(files, request, house.getId(), 1);
 		return i;
 	}
 
@@ -105,5 +109,28 @@ public class HouseService {
 
 	public int delHouse(Integer id){
 		return houseMapper.deleteHouseById(id);
+	}
+
+	public int saveHousePicToBase64(MultipartFile[] files, HttpServletRequest request, Integer house_id, Integer status) throws IOException {
+		int result = 0;
+		for (MultipartFile file : files) {
+			// 传给前台file类型
+			String suffix = FileUtil.getSuffix(file.getOriginalFilename());
+			String src = "data:image/"+suffix+";base64,";
+			StringBuffer sb = new StringBuffer(src);
+			String encode = Base64Encoder.encode(file.getBytes());
+			String imgUrl = (sb.append(encode)).toString();
+			HousePic housePic = new HousePic();
+			housePic.setHouse_id(house_id);
+			housePic.setUrl(imgUrl);
+			housePic.setStatus(status);
+			int i = houseMapper.insertHousePic(housePic);
+			result += i;
+		}
+		return result;
+	}
+
+	public int updateHouseById(Integer id){
+		return houseMapper.updateHouseById(id);
 	}
 }

@@ -39,10 +39,10 @@ public class UserController {
     @RequestMapping("upload")
     public Response upload(MultipartFile[] files, HttpServletRequest request, Integer user_id, Integer house_id,Integer status) throws IOException {
         if (user_id != null) {
-            return Response.Success(userService.addHousePic(files, request, user_id,status));
+            return Response.Success(houseService.saveHousePicToBase64(files, request, user_id,status));
         }
         if (house_id != null){
-            return Response.Success(houseService.addHousePic(files,request,house_id,status));
+            return Response.Success(houseService.saveHousePicToBase64(files,request,house_id,status));
         }
         return Response.Success();
     }
