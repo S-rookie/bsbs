@@ -20,6 +20,7 @@ layui.use(['table', 'jquery'], function () {
         }
         , parseData: function (res) { //res 即为原始返回的数据
             // debugger;
+            console.log(res)
             let data = Apt_reserve(res);
             return {
                 "code": res.code, //解析接口状态
@@ -107,7 +108,8 @@ layui.use(['table', 'jquery'], function () {
                         'houseid': list[i].house_id,
                         'payway': list[i].pay_a,
                         'username': list[i].u_nick_name,
-                        'reservestate': list[i].status == 0 ? false : true,
+//                        'reservestate': list[i].status == 0 ? false : true,
+                        'reservestate': list[i].status,
                         'tenantphone': list[i].phone,
                         'tenantname': list[i].nick_name,
                         'zent': list[i].rent,
@@ -154,16 +156,17 @@ layui.use(['table', 'jquery'], function () {
                 layer.confirm('真的取消么', function (index) {
                     obj.del();
                     $.ajax({
-                    	url:'http://localhost:8080/reserve/update',
-                    	type:'POST',
-                    	data:{'id': data.reserveid,'close':1,'access_token': token.access_token},
-                    	success:function(res){
-                    		layer.msg('修改成功', {icon: 1, time: 1000});
-                    	},
-                    	error:function(){
-                    		layer.msg('修改失败', {icon: 2, time: 1000});
-                    	}
+                        url:'http://localhost:8080/reserve/update',
+                        type:'POST',
+                        data:{'id': data.reserveid,'close':2,'access_token': token.access_token},
+                        success:function(res){
+                            layer.msg('修改成功', {icon: 1, time: 1000});
+                        },
+                        error:function(){
+                            layer.msg('修改失败', {icon: 2, time: 1000});
+                        }
                     });
+                    window.parent.location.reload();
                     layer.close(index);
                 });
                 break;
@@ -171,7 +174,8 @@ layui.use(['table', 'jquery'], function () {
                 layer.confirm('同意对方的申请吗', function (index) {
                     let parm = {
                         'id': data.reserveid,
-                        'status': data.reservestate + 1,
+//                        'status': data.reservestate + 1,
+                        'close':200,
                         'access_token': token.access_token
                     };
                     $.ajax({
@@ -181,13 +185,36 @@ layui.use(['table', 'jquery'], function () {
                         success: function (res) {
                             layer.msg('修改成功', {icon: 1, time: 1000});
                             obj.update({
-                                "reservestate": data.reservestate + 1 // "name": "value"
+                                "reservestate": 2000 // "name": "value"
                             });
                         }
                         , error: function () {
                             layer.msg('修改失败', {icon: 2, time: 1000});
                         }
                     });
+                    window.parent.location.reload();
+                    layer.close(index);
+                });
+                break;
+            case 'canel':
+                if (data.reservestate!==111 && data.reservestate!==222){
+                    layer.msg('请先取消预约');
+                    break;
+                }
+                layer.confirm('真的删除么', function (index) {
+                    $.ajax({
+                        url:'http://localhost:8080/reserve/update',
+                        type:'POST',
+                        // 添加close 表示预约数据的状态 0--待审核  1--审核通过 -1，-2表示删除，-1租客删除,-2房东删除，  close=1,status=999--取消
+                        data:{'id': data.reserveid,'close':-2,'access_token': token.access_token},
+                        success:function(res){
+                            layer.msg('删除成功', {icon: 1, time: 1000});
+                        },
+                        error:function(){
+                            layer.msg('删除失败', {icon: 2, time: 1000});
+                        }
+                    });
+                    obj.del();
                     layer.close(index);
                 });
                 break;

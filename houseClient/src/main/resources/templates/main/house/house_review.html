@@ -1,17 +1,28 @@
 <!DOCTYPE html>
-<html lang="en">
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <link rel="stylesheet" href='../../../static/layui/css/layui.css'
           th:href="@{/layui/css/layui.css}">
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>房屋发布页</title>
 </head>
 <body>
 <div class="layui-fluid">
     <div th:replace="top/top::top"></div>
     <div class="layui-row">
-        <table class="layui-hide" id="renthourse" lay-filter="order"></table>
+        <div>
+            房屋名称
+            <div class="layui-inline">
+                <input class="layui-input" name="title" id="title" autocomplete="off">
+            </div>
+
+            房屋地址
+            <div class="layui-inline">
+                <input class="layui-input" name="addr_detail" id="addr_detail" autocomplete="off">
+            </div>
+            <button class="layui-btn" data-type="reload">搜索</button>
+        </div>
+        <table class="layui-hide" id="renthourse" lay-filter="hourse"></table>
         <script type="text/html" id="toolbar">
             <div class="layui-btn-container">
                 <button class="layui-btn layui-btn-sm" lay-event="flush"><i class="layui-icon layui-icon-refresh" style="font-size: 20px; color: #f9ff20;"></i></button>
@@ -19,65 +30,147 @@
         </script>
 
         <script type="text/html" id="bar">
-            <a class="layui-btn layui-btn-xs layui-btn-warm" lay-event="checking">审核</a>
             <a class="layui-btn layui-btn-xs" lay-event="look">查看</a>
-            <!--      <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>-->
+            <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="check">审核</a>
         </script>
-
-        <!--    <script type="text/html" id="houser">-->
-        <!--      <input type="hidden" value="{{d.houseid}}" style="width: 0px;height: 0px">-->
-        <!--      <a class="layui-btn layui-btn-xs" onclick="show_house(this,event)">查看详情</a>-->
-        <!--    </script>-->
-        <div id="passed" style="display: none; width: 200px;height: 150px; position: relative" >
-            <div style="position: absolute; left: 10%; top: 30%">
-                <button class="layui-btn layui-btn-normal " id="yesPassed">通过</button>
-                <button class="layui-btn layui-btn-normal">不通过</button>
-            </div>
-        </div>
-        <script type="text/html" id="idcard1">
-            {{#
-            var plusXing = function (str) {
-            if(str === null){
-            return '无数据'
-            }
-            return str.substring(0, 6) + "**********" + str.substring(str.length - 2);
-            };
-            }}
-            <div>{{ plusXing(d.owneridentity) }}</div>
-        </script>
-
-        <script type="text/html" id="idcard2">
-            {{#
-            var plusXing = function (str) {
-            if(str === null){
-            return '无数据'
-            }
-            return str.substring(0, 6) + "**********" + str.substring(str.length - 2);
-            };
-            }}
-            <div>{{ plusXing(d.tenantidentity) }}</div>
+        <script type="text/html" id="checkboxTp1">
+            <input type="checkbox" name="status" value="{{d.id}}" status="{{d.status}}" title="出租状态" lay-filter="status1"
+                   {{ d.status>=2 ? 'checked' : '' }}>
         </script>
 
         <script type="text/html" id="checkboxTp2">
-            {{#   if( !(d.status ==0) ){  }}
+            {{#   if( d.attestation ){  }}
             <i class="layui-icon layui-icon-auz" style="font-size: 30px; color: #1E9FFF; margin-left: 20px"></i>
             {{# }else{ }}
             <i class="layui-icon layui-icon-close-fill" style="font-size: 30px; color: #ff1a00;margin-left: 20px"></i>
             {{#  } }}
         </script>
 
-        <script type="text/html" id="checkboxTp3">
-            {{#   if( (d.define & 2) === 2 ){  }}
-            <i class="layui-icon layui-icon-auz" style="font-size: 30px; color: #1E9FFF; margin-left: 20px"></i>
-            {{# }else{ }}
-            <i class="layui-icon layui-icon-close-fill" style="font-size: 30px; color: #ff1a00;margin-left: 20px"></i>
-            {{#  } }}
+        <script type="text/html" id="img">
+            {{#  if(d.houseimage && d.houseimage != ""){ }}
+            <img
+                    src="{{=d.houseimage }}" width="100%"
+                    height="100%" onclick="previewImg(this)"
+            >
+            {{#  }else{ }}
+            无数据
+            {{# } }}
         </script>
-
 
     </div>
 </div>
 <script src="../../../static/layui/layui.js" th:src="@{/layui/layui.js}"></script>
-<script src="../../../static/js/house_review.js" th:src="@{/js/house_review.js}"></script>
+<script src="../../../static/js/house_manage.js" th:src="@{/js/house_review.js}"></script>
 </body>
+<div class="layui-form" style="display: none;" id="formedit" lay-filter="formedit" >
+    <input type="hidden" name="houseid" lay-verify="required" autocomplete="off" class="layui-input"
+           style="height: 0px">
+    <div class="layui-form-item">
+        <label class="layui-form-label">房屋名称:</label>
+        <div class="layui-input-block">
+            <input type="text" name="housename" required lay-verify="required"
+                   autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <script type="text/html" id="houser">
+        <input type="hidden" value="{{d.houseid}}" style="width: 0px;height: 0px">
+        <a class="layui-btn layui-btn-xs" onclick="show_house(this,event)">查看详情</a>
+    </script>
+    <div class="layui-form-item">
+        <label class="layui-form-label">房屋类型:</label>
+        <div class="layui-input-block" id="housestyle_view">
+        </div>
+        <script id="housestyle_tpl">
+            <select name="housestyle" lay-verify="required">
+                <option value=""></option>
+                <%# for(var key in d.housestyle){ %>
+                <option value=<%= key %>> <% d.housestyle[key] %></option>
+            <%# } %>
+            </select>
+        </script>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">房屋面积:</label>
+        <div class="layui-input-inline">
+            <input type="text" name="housearea" required lay-verify="required"
+                   autocomplete="off" class="layui-input">
+        </div>
+        <div class="layui-form-mid layui-word-aux">㎡</div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">房屋区域:</label>
+        <div class="layui-input-block" id="area_view">
+        </div>
+        <script id="area_tpl">
+            <select name="area" lay-verify="required">
+                <option value=""></option>
+                <%# for(var key in d.areas){ %>
+                <option value=<%= key %>> <% d.areas[key] %></option>
+            <%# } %>
+            </select>
+        </script>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">房源风格:</label>
+        <div class="layui-input-block" id="style_view">
+        </div>
+        <script id="style_tpl">
+            <select name="style" lay-verify="required">
+                <option value=""></option>
+                <%# for(var key in d.style){ %>
+                <option value=<%= key %>> <% d.style[key] %></option>
+            <%# } %>
+            </select>
+        </script>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">租金:</label>
+        <div class="layui-input-inline">
+            <input type="text" name="zent" lay-verify="required" autocomplete="off"
+                   class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">缴费方式:</label>
+        <div class="layui-input-block" id="payway_view">
+        </div>
+        <script id="payway_tpl">
+            <select name="payway" lay-verify="required">
+                <option value=""></option>
+                <%# for(var key in d.payway){ %>
+                <option value=<%= key %>> <% d.payway[key] %></option>
+            <%# } %>
+            </select>
+        </script>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">房屋图片:</label>
+        <div class="layui-input-block">
+            <button type="button" class="layui-btn" id="upimg">
+                <i class="layui-icon">&#xe67c;</i>上传图片
+            </button>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">房屋设施:</label>
+        <div class="layui-input-block">
+            <textarea name="housefaci" placeholder="请输入内容" class="layui-textarea"></textarea>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">房屋地址:</label>
+        <div class="layui-input-block">
+            <textarea name="houseaddress" placeholder="请输入内容" class="layui-textarea"></textarea>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit="" lay-filter="up" id="up">修改</button>
+        </div>
+    </div>
+</div>
+<div class="layui-upload-drag" id="file" style="display: none;">
+    <i class="layui-icon"></i>
+    <p>点击上传，或将文件拖拽到此处</p>
+</div>
 </html>

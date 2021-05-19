@@ -18,14 +18,25 @@
         </script>
 
         <script type="text/html" id="bar">
+            {{#   if( d.reservestate!==111  && d.reservestate!==999){  }}
             <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">取消预约</a>
+
+            {{# }else{ }}
+            <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">已取消</a>
+            {{#  } }}
+
+            <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="canel">删除</a>
         </script>
 
         <script type="text/html" id="checkboxTp2">
             {{#   if( d.reservestate==1 ){  }}
-            <i class="layui-icon layui-icon-auz" style="font-size: 30px; color: #1E9FFF; margin-left: 20px"></i>
+            <i class="layui-icon layui-icon-auz" style="font-size: 10px; color: #1E9FFF; margin-left: 20px"></i>
             {{# }else if( d.reservestate== '999' ){  }}
-            <i class="layui-icon layui-icon-close-fill" style="font-size: 30px; color: #fab314;margin-left: 20px"></i>
+            <i style=" color: #fab314;margin-left: 20px">已被租出</i>
+
+            {{# }else if( d.reservestate== '2222' ){  }}
+            <i style=" color: #fab314;margin-left: 10px">房东已经删除</i>
+
             {{# }else{ console.log(d.reservestate)}}
             <i class="layui-icon layui-icon-close-fill" style="font-size: 30px; color: #ff1a00;margin-left: 20px"></i>
             {{#  } }}

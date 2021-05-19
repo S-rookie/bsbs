@@ -18,6 +18,7 @@ layui.use(['table', 'jquery'], function () {
             , limitName: 'pageSize' //每页数据量的参数名，默认：limit
         }
         , parseData: function (res) { //res 即为原始返回的数据
+            console.log(res)
             // debugger;
             let data = Apt_reserve(res);
             return {
@@ -145,23 +146,46 @@ layui.use(['table', 'jquery'], function () {
         let data = obj.data;
         switch (obj.event) {
             case 'del':
-                if (data.reservestate=='999'){
+                if (data.reservestate=='999' || data.reservedate=='111'){
                     layer.msg('已取消');
                     break;
                 }
                 layer.confirm('真的取消么', function (index) {
-                	 $.ajax({
-                     	url:'http://localhost:8080/reserve/update',
-                     	type:'POST',
-                         // 添加close 表示预约数据的状态 0--待审核  1--审核通过   close=1,status=999--取消
-                     	data:{'id': data.reserveid,'close':1,'access_token': token.access_token},
-                     	success:function(res){
-                     		layer.msg('修改成功', {icon: 1, time: 1000});
-                     	},
-                     	error:function(){
-                     		layer.msg('修改失败', {icon: 2, time: 1000});
-                     	}
-                     });
+                    $.ajax({
+                        url:'http://localhost:8080/reserve/update',
+                        type:'POST',
+                        // 添加close 表示预约数据的状态 0--待审核  1--审核通过 ,  close=1,status=999--取消
+                        data:{'id': data.reserveid,'close':1,'access_token': token.access_token},
+                        success:function(res){
+                            layer.msg('修改成功', {icon: 1, time: 1000});
+                        },
+                        error:function(){
+                            layer.msg('修改失败', {icon: 2, time: 1000});
+                        }
+                    });
+                    //                   obj.del();
+                    window.parent.location.reload();
+                    layer.close(index);
+                });
+                break;
+            case 'canel':
+                if (data.reservestate!==111 && data.reservestate!==222){
+                    layer.msg('请先取消预约');
+                    break;
+                }
+                layer.confirm('真的删除么', function (index) {
+                    $.ajax({
+                        url:'http://localhost:8080/reserve/update',
+                        type:'POST',
+                        // 添加close 表示预约数据的状态 0--待审核  1--审核通过 -1，-2表示删除，-1租客删除,-2房东删除，  close=1,status=999--取消
+                        data:{'id': data.reserveid,'close':-1,'access_token': token.access_token},
+                        success:function(res){
+                            layer.msg('删除成功', {icon: 1, time: 1000});
+                        },
+                        error:function(){
+                            layer.msg('删除失败', {icon: 2, time: 1000});
+                        }
+                    });
                     obj.del();
                     layer.close(index);
                 });
