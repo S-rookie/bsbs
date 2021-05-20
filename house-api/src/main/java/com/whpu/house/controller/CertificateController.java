@@ -29,7 +29,8 @@ public class CertificateController {
     public Response searchCertificate(HttpServletRequest request){
         String houseId = request.getParameter("house_id");
         String cerType = request.getParameter("certificate_type");
-        String orderId = request.getParameter("order_id");
+        String author_role = request.getParameter("author_role");
+        String house_or_order_id = request.getParameter("house_or_order_id");
         Certificate certificate = new Certificate();
         if (!StrUtil.isEmpty(houseId)){
             certificate.setHouse_id(Integer.parseInt(houseId));
@@ -37,8 +38,11 @@ public class CertificateController {
         if (!StrUtil.isEmpty(cerType)){
             certificate.setCertificate_type(cerType);
         }
-        if (!StrUtil.isEmpty(orderId)){
-            certificate.setHouse_or_order_id(Integer.parseInt(orderId));
+        if (!StrUtil.isEmpty(author_role)){
+            certificate.setAuthor_role(author_role);
+        }
+        if (!StrUtil.isEmpty(house_or_order_id)){
+            certificate.setHouse_or_order_id(Integer.parseInt(house_or_order_id));
         }
         List<Certificate> certificates = certificateService.selectCertificateByOrder(certificate);
         if (certificates.size() != 0){

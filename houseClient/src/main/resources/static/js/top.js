@@ -15,7 +15,7 @@ function nva() {
             try {
                 let token = localStorage.getItem('TOKEN');
                 if (token != null) {
-                    window.location.href = url;
+                     window.location.href = url;
                 } else {
                     layer.msg('没有登陆快去登陆吧', {
                         icon: 2,
@@ -55,7 +55,7 @@ function nva() {
         // 监听导航点击
         element.on('nav(loginfilter)', function (elem) {
             let id = $(elem).attr("id");
-            // debugger;
+            debugger
             switch (id) {
                 case "loginout_top": {
                     logout();
@@ -63,23 +63,49 @@ function nva() {
                     break;
                 }
                 case 'owner_order_manage_top': {
-                    errotoken('/showOwnerManage');
+                    checkRole('/showOwnerManage')
                     break;
+                    // errotoken('/showOwnerManage');
+                    // break;
                 }
                 case 'tenant_order_manage_top': {
-                    errotoken("/showTentantManage");
+                    checkRole('/showTentantManage')
+                    // errotoken("/showTentantManage");
                     break;
                 }
                 case 'house_manage_top': {
-                    errotoken('/showRentManage');
+                    checkRole('/showRentManage')
+                    // errotoken('/showRentManage');
                     break;
                 }
                 case 'house_review_top':{
-                    errotoken('/showHouseReview');
+                    let token = localStorage.getItem('TOKEN');
+                    var user = JSON.parse(localStorage.getItem('USER'));
+                    var userRole = '';
+                    if (token != null) {
+                        userRole = load_userRole(user.value.id);
+                        if (userRole[0].roles[0].authority === 'USER') {
+                            layer.msg('你没有权限');
+                            return;
+                        }else {
+                            errotoken('/showHouseReview');
+                        }
+                    }
                     break;
                 }
                 case 'contract_review_top': {
-                    errotoken('/admin/showContractReview');
+                    let token = localStorage.getItem('TOKEN');
+                    var user = JSON.parse(localStorage.getItem('USER'));
+                    var userRole = '';
+                    if (token != null) {
+                        userRole = load_userRole(user.value.id);
+                        if (userRole[0].roles[0].authority === 'USER') {
+                            layer.msg('你没有权限');
+                            return;
+                        }else {
+                            errotoken('/admin/showContractReview');
+                        }
+                    }
                     break;
                 }
                 case 'user_manage_top': {
@@ -101,7 +127,23 @@ function nva() {
                 }
             }
         });
+
+        function checkRole(data) {
+            let token = localStorage.getItem('TOKEN');
+            var user = JSON.parse(localStorage.getItem('USER'));
+            var userRole = '';
+            if (token != null) {
+                userRole = load_userRole(user.value.id);
+                if (userRole[0].roles[0].authority === 'ADMIN') {
+                    layer.msg('你没有权限');
+                    return;
+                }else {
+                    errotoken(data);
+                }
+            }
+        }
     });
+
 
     function logout() {
         localStorage.removeItem("TOKEN");
@@ -315,3 +357,27 @@ function sleep(numberMillis) {
             return;
     }
 }
+
+// 查询用户Role
+function load_userRole(user_id) {
+    let $ = layui.jquery;
+    let token = JSON.parse(localStorage.getItem('TOKEN'));
+    var result = '';
+    layui.use('jquery', function () {
+        $.ajax({
+            async: false,
+            url: 'http://localhost:8080/user/getRole',
+            type: 'POST',
+            data: {"user_id":user_id,"access_token": token.value.access_token,},
+            success: function (res) {
+                result = res.data
+            },
+            error: function () {
+                layer.msg('查询出错', {icon: 2, time: 1000});
+            }
+        });
+    });
+    return result;
+}
+
+

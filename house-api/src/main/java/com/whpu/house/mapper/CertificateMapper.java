@@ -17,7 +17,7 @@ public interface CertificateMapper {
      * @param certificate
      * @return
      */
-    @Insert("insert into certificate (user_id,house_id,url,create_time,certificate_type,author_role) values (#{cer.user_id},#{cer.house_id},#{cer.url},#{cer.create_time},#{cer.certificate_type},#{cer.author_role})")
+    @Insert("insert into certificate (user_id,house_id,url,create_time,certificate_type,author_role,house_or_order_id) values (#{cer.user_id},#{cer.house_id},#{cer.url},#{cer.create_time},#{cer.certificate_type},#{cer.author_role},#{cer.house_or_order_id})")
     public int saveCertificate(@Param("cer") Certificate certificate);
 
     /**

@@ -10,7 +10,8 @@ layui.use(['table', 'jquery'], function () {
         elem: '#renthourse'//表格绑定 根据id绑定
         , url: url //请求地址
         , method: 'POST'//请求方法
-        , where: {"access_token": token.access_token, 'user_id': user.id, 'pay_b': 0}
+        // , where: {"access_token": token.access_token, 'user_id': user.id, 'pay_b': 0}
+        , where: {"access_token": token.access_token,} // 管理员审核显示所有数据
         // , contentType: 'application/json'//发送到服务端的内容编码类型
         , toolbar: '#toolbar' //开启表格头部工具栏区域 左边图标
         , title: '房东房屋表格'//定义 table 的大标题（在文件导出等地方会用到
@@ -142,6 +143,10 @@ layui.use(['table', 'jquery'], function () {
                 var cer = load_certificate(data);
                 if (cer.length === 0 ){
                     layer.msg('等待用户上传文件!')
+                    break;
+                }
+                if (data.status != 0){
+                    layer.msg('已经审核过!')
                     break;
                 }
                 layer.confirm('可以通过吗', {btn: ['通过', '不通过']}, function (index) {
@@ -416,6 +421,7 @@ function Apt_house(data) {
         } catch (err) {
             image = "/images/temp/property_01.jpg";
         }
+        var cer = load_certificate(data);
         swaplist[i] = {
             "houseimage": image,
             "housename": swapdata[i].title,
@@ -424,9 +430,9 @@ function Apt_house(data) {
             "houseaddress": swapdata[i].addr_detail,
             "style": swapdata[i].style,
             "area": swapdata[i].addr_id,
-            "status": swapdata[i].status >= 2 ? true : false,
+            "status": swapdata[i].status,
             "payway": swapdata[i].pay_a,
-            "attestation": swapdata[i].status >= 1 ? true : false,
+            "attestation": cer.length  >= 1 ? true : false,
             "housedate": swapdata[i].create_time,
             "housearea": swapdata[i].area,
             "username": swapdata[i].username,
@@ -607,18 +613,21 @@ function show_contract(data) {
             responseType: 'blob',
             success: function (res) {
                 layer.msg('查询成功', {icon: 1, time: 1000});
-                const blob = new Blob([res], {type: "textain"})
-                let downloadElement = document.createElement('a');
-                let href = window.URL.createObjectURL(blob);
-                downloadElement.href = href;
-                downloadElement.download = 'fileName';
-                document.body.appendChild(downloadElement);
-                // 点击下载
-                downloadElement.click();
-                // 下载完成移除元素
-                document.body.removeChild(downloadElement);
-                // 释放掉blob对象
-                window.URL.revokeObjectURL(href);
+                // 多个文件下载
+                res.forEach(function (item, i){
+                    const blob = new Blob([item], {type: "textain"})
+                    let downloadElement = document.createElement('a');
+                    let href = window.URL.createObjectURL(blob);
+                    downloadElement.href = href;
+                    downloadElement.download = 'fileName';
+                    document.body.appendChild(downloadElement);
+                    // 点击下载
+                    downloadElement.click();
+                    // 下载完成移除元素
+                    document.body.removeChild(downloadElement);
+                    // 释放掉blob对象
+                    window.URL.revokeObjectURL(href);
+                })
             },
             error: function () {
                 layer.msg('修改失败', {icon: 2, time: 1000});

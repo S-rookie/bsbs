@@ -1,6 +1,7 @@
 package com.whpu.house.controller;
 
 import cn.hutool.core.convert.Convert;
+import cn.hutool.core.util.StrUtil;
 import com.whpu.house.common.Response;
 import com.whpu.house.pojo.Certificate;
 import com.whpu.house.service.CommonService;
@@ -32,10 +33,25 @@ public class CommonController {
         String userId = request.getParameter("user_id");
         String houseId = request.getParameter("house_id");
         String certificate_type = request.getParameter("certificate_type");
+        String author_role = request.getParameter("author_role");
+        String house_or_order_id = request.getParameter("house_or_order_id");
+
         Certificate certificate = new Certificate();
-        certificate.setHouse_id(Integer.parseInt(houseId));
-        certificate.setUser_id(Integer.parseInt(userId));
-        certificate.setCertificate_type(certificate_type);
+        if (!StrUtil.isEmpty(userId)){
+            certificate.setUser_id(Integer.parseInt(userId));
+        }
+        if (!StrUtil.isEmpty(houseId)){
+            certificate.setHouse_id(Integer.parseInt(houseId));
+        }
+        if (!StrUtil.isEmpty(certificate_type)){
+            certificate.setCertificate_type(certificate_type);
+        }
+        if (!StrUtil.isEmpty(author_role)){
+            certificate.setAuthor_role(author_role);
+        }
+        if (!StrUtil.isEmpty(house_or_order_id)){
+            certificate.setHouse_or_order_id(Integer.parseInt(house_or_order_id));
+        }
 
         MultipartHttpServletRequest mr = (MultipartHttpServletRequest) request;
         Map<String, MultipartFile> fileMap = mr.getFileMap();

@@ -278,6 +278,7 @@ function uploadData(data) {
         let token = get_localStorage('TOKEN');
         upload.render({
             elem: '#file', //绑定元素
+            multiple: true,
             url: 'http://localhost:8080/common/upload' //上传接口
             , method: 'post'//默认post
             , data: {
@@ -286,6 +287,7 @@ function uploadData(data) {
                 "user_id": data.userid,
                 "certificate_type": '111',
                 "author_role": '1',
+                "house_or_order_id": data.houseid,
             }
             , accept: 'file'//文件类型
             , size: 51200//大小
@@ -298,6 +300,7 @@ function uploadData(data) {
                 //上传完毕回调
                 // 关闭上传窗口
                 layer.msg("文件上传成功")
+                return;
             }
             , error: function () {
                 console.log('请求异常回调');
@@ -447,6 +450,7 @@ function Apt_house(data) {
         } catch (err) {
             image = "/images/temp/property_01.jpg";
         }
+        var cer = load_certificate(data);
         swaplist[i] = {
             "houseimage": image,
             "housename": swapdata[i].title,
@@ -455,9 +459,9 @@ function Apt_house(data) {
             "houseaddress": swapdata[i].addr_detail,
             "style": swapdata[i].style,
             "area": swapdata[i].addr_id,
-            "status": swapdata[i].status >= 2 ? true : false,
+            "status": swapdata[i].status,
             "payway": swapdata[i].pay_a,
-            "attestation": swapdata[i].status >= 1 ? true : false,
+            "attestation": cer.length  >= 1 ? true : false,
             "housedate": swapdata[i].create_time,
             "housearea": swapdata[i].area,
             "username": swapdata[i].username,
@@ -605,7 +609,7 @@ function show_house(obj, event) {
 
 function load_certificate(data) {
     let $ = layui.jquery;
-    let hi = data.house_id;
+    let hi = data.houseid;
     let token = get_localStorage('TOKEN');
     var result = '';
     layui.use('jquery', function () {

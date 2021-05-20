@@ -32,6 +32,6 @@ public interface HouseMapper {
      * @param status
      * @return
      */
-    @Update("update house set status = 1 where id = #{house_id} and status = #{status}")
+    @Update("update house set status = #{status} where id = #{house_id}")
     int updateHouseById(@Param("house_id") Integer id, @Param("status") String status);
 }

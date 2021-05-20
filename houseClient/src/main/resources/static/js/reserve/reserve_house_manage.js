@@ -197,7 +197,7 @@ layui.use(['table', 'jquery'], function () {
                 });
                 break;
             case 'canel':
-                if (data.reservestate!==111 && data.reservestate!==222){
+                if (data.reservestate!==111 && data.reservestate!==222 &&data.reservestate!==999){
                     layer.msg('请先取消预约');
                     break;
                 }

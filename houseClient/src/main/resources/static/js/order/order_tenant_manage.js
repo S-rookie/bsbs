@@ -225,7 +225,8 @@ function uploadData(data) {
                 "house_id": data.houseid,
                 "user_id": data.ownerid,
                 "certificate_type": '222',
-                "author_role": 0
+                "author_role": 0,
+                "house_or_order_id": data.id,
             }
             , accept: 'file'//文件类型
             , size: 51200//大小

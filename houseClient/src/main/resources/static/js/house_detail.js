@@ -166,7 +166,7 @@ layui.use(['laytpl', 'jquery', 'layer', 'form'], function () {
                     'house_id': houseid,
                     'create_time': new Date(),
                     'time': new Date(time),
-                    'status': 0,
+                    'status': 100,
                     'access_token': token
                 };
                 $.ajax({

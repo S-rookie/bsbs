@@ -96,6 +96,16 @@
         WHERE u.username = #{username}
     </select>
 
+    <select id="selectUserAndRole" resultMap="user">
+        SELECT
+            u.id,u.nick_name,u.username,u.password,u.phone,u.email,u.credit,u.status,u.create_time,u.id_card,u.sex,
+            r.id AS role_id,r.role_name
+        FROM user AS u
+                 LEFT JOIN user_role AS ur ON ur.user_id = u.id
+                 LEFT JOIN role AS r ON r.id = ur.role_id
+        WHERE u.id = #{id}
+    </select>
+
 
     <!-- ============================================================================ -->
     <resultMap id="role" type="Role">

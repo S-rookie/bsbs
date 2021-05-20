@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -103,6 +104,11 @@ public class OrderController {
         certificate.setHouse_id(Integer.parseInt(houseId));
         certificate.setCertificate_type(cerType);
         List<Certificate> certificates = orderService.searchContract(certificate);
+        List<byte[]> bytesList = new ArrayList<>();
+        certificates.forEach((c)->{
+            byte[] bytes = Convert.hexToBytes(c.getUrl());
+            bytesList.add(bytes);
+        } );
         byte[] cerBytes = Convert.hexToBytes(certificates.get(0).getUrl());
         OutputStream baos = new ByteArrayOutputStream();
         // 转换成 FileOutputStream

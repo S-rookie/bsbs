@@ -27,4 +27,6 @@ public interface UserMapper{
 
     int addUserRole(@Param("user") User user, @Param("role") Role role);
     int updateUserRole(@Param("user") User user, @Param("role") Role role);
+
+    User selectUserAndRole(@Param("id") Integer id);
 }

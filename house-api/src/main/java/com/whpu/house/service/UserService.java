@@ -18,10 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 
 @Service
@@ -91,7 +88,11 @@ public class UserService implements UserDetailsService {
         user.setCredit(100);
         user.setStatus(1);
         user.setCreateTime(new Date());
-        return userMapper.insertUser(user);
+        Role userRole = new Role();
+        userRole.setId(2);
+        userRole.setRoleName("USER");
+        userMapper.insertUser(user);
+        return   userMapper.addUserRole(user,userRole);
     }
     public int updateUser(User user){
         if (StringUtil.isNotEmpty(user.getPassword())){
@@ -109,5 +110,10 @@ public class UserService implements UserDetailsService {
     @Override
     public User loadUserByUsername(String s) throws UsernameNotFoundException {
         return userMapper.selectUserByName(s);
+    }
+
+    public User getRole(Integer id){
+        User user = userMapper.selectUserAndRole(id);
+        return user;
     }
 }

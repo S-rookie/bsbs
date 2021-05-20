@@ -97,4 +97,10 @@ public class UserController {
         return Response.Success(userService.updateUserRole(user, role));
     }
 
+    @RequestMapping("user/getRole")
+    public Response getRole(HttpServletRequest request) {
+        String user_id = request.getParameter("user_id");
+        return Response.Success(userService.getRole(Integer.parseInt(user_id)));
+    }
+
 }
